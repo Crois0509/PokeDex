@@ -15,6 +15,7 @@
 		AA75C70E2D1D1BDC009B2A9D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA75C70D2D1D1BDC009B2A9D /* SnapKit */; };
 		AA75C7112D1D1CB0009B2A9D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = AA75C7102D1D1CB0009B2A9D /* RxCocoa */; };
 		AA75C7132D1D4D62009B2A9D /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C7122D1D4D62009B2A9D /* NetworkManager.swift */; };
+		AA75C7152D1D4FA9009B2A9D /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C7142D1D4FA9009B2A9D /* NetworkError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		AA75C7002D1D1A9C009B2A9D /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		AA75C7012D1D1A9C009B2A9D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		AA75C7122D1D4D62009B2A9D /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		AA75C7142D1D4FA9009B2A9D /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				AA75C7122D1D4D62009B2A9D /* NetworkManager.swift */,
+				AA75C7142D1D4FA9009B2A9D /* NetworkError.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -178,6 +181,7 @@
 				AA75C7032D1D1A9C009B2A9D /* AppDelegate.swift in Sources */,
 				AA75C7042D1D1A9C009B2A9D /* MainViewController.swift in Sources */,
 				AA75C7052D1D1A9C009B2A9D /* SceneDelegate.swift in Sources */,
+				AA75C7152D1D4FA9009B2A9D /* NetworkError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
