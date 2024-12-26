@@ -12,16 +12,7 @@ struct PokemonDetailDataModel: Decodable {
     let name: String
     let height: Int
     let weight: Int
-    let sprites: [Sprites]
     let types: [PokemonTypes]
-}
-
-struct Sprites: Decodable {
-    let frontDefault: String
-    
-    enum CondingKeys: String, CodingKey {
-        case frontDefault = "front_default"
-    }
 }
 
 struct PokemonTypes: Decodable {
