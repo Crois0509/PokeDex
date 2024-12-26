@@ -1,12 +1,3 @@
----
-name: 새로운 작업
-about: 새로운 작업에 대한 PR을 작성해 주세요.
-title: "✨[feat] 새로운 작업"
-labels: ''
-assignees: Crois0509
-
----
-
 ## ✨New Content✨
 *새로 추가된 기능, 속성 등을 작성해 주세요*
 
