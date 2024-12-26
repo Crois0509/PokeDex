@@ -14,5 +14,30 @@ final class MainViewModel {
     
     let disposeBag = DisposeBag()
     
-    let pokeDexData = BehaviorSubject(value: [PokemonDataModel]())
+    let pokeDexData = BehaviorSubject(value: [PokemonData]())
+    
+    init() {
+        fetchPokeDex(self.pokeDexData)
+    }
+    
+    private func fetchData<T: Decodable>(url: URL, decodingType: T.Type) -> Single<T> {
+        return NetworkManager.shared.fetch(url: url)
+    }
+    
+    private func fetchPokeDex(_ subject: BehaviorSubject<[PokemonData]>) {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=\(limit)&offset=\(offset)") else {
+            print(NetworkError.invalidURL.errorDescription)
+            return
+        }
+        
+        fetchData(url: url, decodingType: PokemonDataModel.self)
+            .subscribe(onSuccess: { data in
+                subject.onNext(data.results)
+                
+            }, onFailure: { error in
+                subject.onError(error)
+                print(NetworkError.dataFetchFail.errorDescription)
+                
+            }).disposed(by: self.disposeBag)
+    }
 }
