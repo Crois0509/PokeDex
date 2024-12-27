@@ -7,8 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class PokemonCollectionView: UIView {
+    
+    private let viewModel = MainViewModel()
+    
+    private var pokemonImageList: [UIImage] = []
     
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
@@ -37,12 +42,14 @@ final class PokemonCollectionView: UIView {
         super.init(frame: frame)
         
         setupUI()
+        bind()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
         setupUI()
+        bind()
     }
     
     private func setupUI() {
@@ -54,6 +61,20 @@ final class PokemonCollectionView: UIView {
         }
     }
     
+    private func bind() {
+        self.viewModel.pokemonImages
+            .subscribe(onNext: { [weak self] images in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self?.pokemonImageList.append(contentsOf: images)
+                    self?.collectionView.reloadData()
+                }
+                
+            }, onError: { error in
+                print(error)
+                
+            }).disposed(by: self.viewModel.disposeBag)
+    }
+    
 }
 
 extension PokemonCollectionView: UICollectionViewDelegate {
@@ -63,7 +84,7 @@ extension PokemonCollectionView: UICollectionViewDelegate {
 extension PokemonCollectionView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return self.pokemonImageList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -71,7 +92,7 @@ extension PokemonCollectionView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.addImage(UIImage(systemName: "person")!)
+        cell.addImage(self.pokemonImageList[indexPath.item])
         
         return cell
     }
