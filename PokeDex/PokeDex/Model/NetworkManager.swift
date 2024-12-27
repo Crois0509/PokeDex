@@ -5,7 +5,7 @@
 //  Created by 장상경 on 12/26/24.
 //
 
-import Foundation
+import UIKit
 import RxSwift
 
 final class NetworkManager {
@@ -43,5 +43,26 @@ final class NetworkManager {
             
             return Disposables.create()
         }
+    }
+    
+    func fetchImage(id: Int) -> UIImage? {
+        var resultImage: UIImage?
+        guard let url = URL(string: URLManager.pokemonImage(id: id).sendURL) else { return nil }
+        
+        DispatchQueue.global().sync {
+            guard let imageData = try? Data(contentsOf: url) else {
+                resultImage = nil
+                return
+            }
+            
+            guard let image = UIImage(data: imageData) else {
+                resultImage = nil
+                return
+            }
+            
+            resultImage = image
+        }
+        
+        return resultImage
     }
 }
