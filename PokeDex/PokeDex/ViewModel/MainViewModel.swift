@@ -43,7 +43,7 @@ final class MainViewModel {
         Observable.from(list)
             .subscribe(onNext: { data in
                 
-                guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(data.id).png") else {
+                guard let url = URL(string: URLManager.pokemonImage(id: data.id).sendURL()) else {
                     subject.onError(NetworkError.invalidURL)
                     return
                 }

@@ -15,7 +15,7 @@ protocol PokemonServiceProtocol {
 
 final class PokemonManager: PokemonServiceProtocol {
     func fetchPokemonList(limit: Int, offset: Int) -> Single<PokemonDataModel> {
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=\(limit)&offset=\(offset)") else {
+        guard let url = URL(string: URLManager.pokemonData(limit: limit, offset: offset).sendURL()) else {
             print(NetworkError.invalidURL.errorDescription)
             return Single.error(NetworkError.invalidURL)
         }
@@ -23,7 +23,7 @@ final class PokemonManager: PokemonServiceProtocol {
         return NetworkManager.shared.fetch(url: url)
     }
     
-    func fetchPokemonDetails(_ datas: [PokemonData]) -> RxSwift.Single<[PokemonDetailDataModel]> {
+    func fetchPokemonDetails(_ datas: [PokemonData]) -> Single<[PokemonDetailDataModel]> {
         return Observable.from(datas)
             .flatMap { data -> Single<PokemonDetailDataModel> in
                 guard let url = URL(string: data.url) else {
