@@ -25,6 +25,12 @@ final class PokemonCell: UICollectionViewCell {
         setupUI()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.imageView.image = nil
+    }
+    
     private func setupUI() {
         self.backgroundColor = .white
         self.layer.cornerRadius = 10
