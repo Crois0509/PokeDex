@@ -15,7 +15,7 @@ protocol PokemonServiceProtocol {
 
 final class PokemonManager: PokemonServiceProtocol {
     func fetchPokemonList(limit: Int, offset: Int) -> Single<PokemonDataModel> {
-        guard let url = URL(string: URLManager.pokemonData(limit: limit, offset: offset).sendURL()) else {
+        guard let url = URL(string: URLManager.pokemonData(limit: limit, offset: offset).sendURL) else {
             print(NetworkError.invalidURL.errorDescription)
             return Single.error(NetworkError.invalidURL)
         }

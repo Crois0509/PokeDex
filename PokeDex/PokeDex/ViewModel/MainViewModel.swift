@@ -9,8 +9,6 @@ import UIKit
 import RxSwift
 
 final class MainViewModel {
-    private let limit: Int = 20
-    private let offset: Int = 0
     private let pokemonManager: PokemonServiceProtocol
     
     let disposeBag = DisposeBag()
@@ -24,7 +22,7 @@ final class MainViewModel {
     }
     
     private func fetchPokemonData() {
-        self.pokemonManager.fetchPokemonList(limit: self.limit, offset: self.offset)
+        self.pokemonManager.fetchPokemonList(limit: 20, offset: 0)
             .flatMap { self.pokemonManager.fetchPokemonDetails($0.results) }
             .subscribe(onSuccess: { [weak self] details in
                 guard let self else { return }
@@ -43,18 +41,8 @@ final class MainViewModel {
         Observable.from(list)
             .subscribe(onNext: { data in
                 
-                guard let url = URL(string: URLManager.pokemonImage(id: data.id).sendURL()) else {
-                    subject.onError(NetworkError.invalidURL)
-                    return
-                }
-                
-                guard let imageData = try? Data(contentsOf: url) else {
-                    subject.onError(NetworkError.invalidURL)
-                    return
-                }
-                
-                guard let image = UIImage(data: imageData) else {
-                    subject.onError(NetworkError.invalidURL)
+                guard let image = NetworkManager.shared.fetchImage(id: data.id) else {
+                    subject.onError(NetworkError.dataFetchFail)
                     return
                 }
                 
