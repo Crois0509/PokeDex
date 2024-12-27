@@ -11,62 +11,34 @@ import RxSwift
 final class MainViewModel {
     private let limit: Int = 20
     private let offset: Int = 0
+    private let pokemonManager: PokemonServiceProtocol
     
     let disposeBag = DisposeBag()
     
-    private let pokeDexData = BehaviorSubject(value: [PokemonDetailDataModel]())
     let pokemonImages = BehaviorSubject(value: [UIImage]())
 
-    init() {
-        fetchPokemonData(self.pokeDexData)
-        
-        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
-            self.fetchPokemonImage(self.pokemonImages)
-        }
+    init(pokemonManager: PokemonServiceProtocol) {
+        self.pokemonManager = pokemonManager
+
+        fetchPokemonData()
     }
     
-    private func fetchData<T: Decodable>(url: URL, decodingType: T.Type) -> Single<T> {
-        return NetworkManager.shared.fetch(url: url)
-    }
-    
-    private func fetchPokemonData(_ subject: BehaviorSubject<[PokemonDetailDataModel]>) {
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=\(limit)&offset=\(offset)") else {
-            print(NetworkError.invalidURL.errorDescription)
-            return
-        }
-        
-        fetchData(url: url, decodingType: PokemonDataModel.self)
-            .subscribe(onSuccess: { [weak self] data in
-                self?.fetchPokemonDetaileData(data.results, subject)
+    private func fetchPokemonData() {
+        self.pokemonManager.fetchPokemonList(limit: self.limit, offset: self.offset)
+            .flatMap { self.pokemonManager.fetchPokemonDetails($0.results) }
+            .subscribe(onSuccess: { [weak self] details in
+                guard let self else { return }
                 
-            }, onFailure: { error in
-                subject.onError(error)
-                print(NetworkError.dataFetchFail.errorDescription)
+                self.fetchPokemonImage(details: details, self.pokemonImages)
+                
+            }, onFailure: { [weak self] error in
+                self?.pokemonImages.onError(error)
                 
             }).disposed(by: self.disposeBag)
     }
     
-    private func fetchPokemonDetaileData(_ datas: [PokemonData], _ subject: BehaviorSubject<[PokemonDetailDataModel]>) {
-        
-        Observable.from(datas)
-            .flatMap { data -> Single<PokemonDetailDataModel> in
-                guard let url = URL(string: data.url) else {
-                    return Single.error(NetworkError.invalidURL)
-                }
-                return self.fetchData(url: url, decodingType: PokemonDetailDataModel.self)
-            }
-            .toArray()
-            .subscribe(onSuccess: { dataList in
-                subject.onNext(dataList)
-                
-            }, onFailure: { error in
-                subject.onError(error)
-                
-            }).disposed(by: self.disposeBag)
-    }
-    
-    private func fetchPokemonImage(_ subject: BehaviorSubject<[UIImage]>) {
-        guard let list = try? self.pokeDexData.value().sorted(by: { $0.id < $1.id }) else { return }
+    private func fetchPokemonImage(details: [PokemonDetailDataModel], _ subject: BehaviorSubject<[UIImage]>) {
+        let list = details.sorted(by: { $0.id < $1.id })
         
         Observable.from(list)
             .subscribe(onNext: { data in

@@ -11,7 +11,7 @@ import RxSwift
 
 final class PokemonCollectionView: UIView {
     
-    private let viewModel = MainViewModel()
+    private let viewModel = MainViewModel(pokemonManager: PokemonManager())
     
     private var pokemonImageList: [UIImage] = []
     
@@ -64,7 +64,7 @@ final class PokemonCollectionView: UIView {
     private func bind() {
         self.viewModel.pokemonImages
             .subscribe(onNext: { [weak self] images in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                DispatchQueue.main.async {
                     self?.pokemonImageList.append(contentsOf: images)
                     self?.collectionView.reloadData()
                 }
