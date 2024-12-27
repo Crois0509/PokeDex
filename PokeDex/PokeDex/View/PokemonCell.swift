@@ -48,7 +48,7 @@ final class PokemonCell: UICollectionViewCell {
         }
     }
     
-    func addImage(_ image: UIImage) {
+    func addImage(_ image: UIImage?) {
         self.imageView.image = image
     }
 }
