@@ -96,14 +96,25 @@ final class PokemonDetailView: UIView {
         self.viewModel.pokemonDetailData
             .subscribe(onNext: { [weak self] data in
                 guard let self, let data = data.first else { return }
-                guard let type = data.types.first?.type.name else { return }
+                var type: String = ""
+                
+                if data.types.count > 1 {
+                    var types = [String](repeating: "", count: data.types.count)
+                    for type in data.types {
+                        types[type.slot - 1] = type.type.name
+                    }
+                    type = types.joined(separator: ", ")
+                    
+                } else {
+                    type = data.types.first?.type.name ?? ""
+                }
                 
                 DispatchQueue.main.async {
                     self.labelConfig(id: data.id,
                                      name: data.name,
                                      type: type,
-                                     height: data.height,
-                                     weight: data.weight)
+                                     height: data.height / 10,
+                                     weight: data.weight / 10)
                 }
                 
             }, onError: { error in
