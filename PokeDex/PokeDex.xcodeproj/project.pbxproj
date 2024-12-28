@@ -26,6 +26,7 @@
 		AA75C72A2D1E9E39009B2A9D /* URLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C7292D1E9E39009B2A9D /* URLManager.swift */; };
 		AA75C72C2D1F9654009B2A9D /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */; };
 		AA75C72E2D1F9663009B2A9D /* DetaileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C72D2D1F9663009B2A9D /* DetaileViewController.swift */; };
+		AA75C7302D1F9BB6009B2A9D /* PokemonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C72F2D1F9BB6009B2A9D /* PokemonDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		AA75C7292D1E9E39009B2A9D /* URLManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLManager.swift; sourceTree = "<group>"; };
 		AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		AA75C72D2D1F9663009B2A9D /* DetaileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetaileViewController.swift; sourceTree = "<group>"; };
+		AA75C72F2D1F9BB6009B2A9D /* PokemonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 				AA75C7232D1E3496009B2A9D /* PokemonCollectionView.swift */,
 				AA75C7252D1E3D26009B2A9D /* PokeDexView.swift */,
 				AA75C72D2D1F9663009B2A9D /* DetaileViewController.swift */,
+				AA75C72F2D1F9BB6009B2A9D /* PokemonDetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				AA75C7262D1E3D26009B2A9D /* PokeDexView.swift in Sources */,
 				AA75C72E2D1F9663009B2A9D /* DetaileViewController.swift in Sources */,
 				AA75C7042D1D1A9C009B2A9D /* MainViewController.swift in Sources */,
+				AA75C7302D1F9BB6009B2A9D /* PokemonDetailView.swift in Sources */,
 				AA75C7052D1D1A9C009B2A9D /* SceneDelegate.swift in Sources */,
 				AA75C72C2D1F9654009B2A9D /* DetailViewModel.swift in Sources */,
 				AA75C7152D1D4FA9009B2A9D /* NetworkError.swift in Sources */,
