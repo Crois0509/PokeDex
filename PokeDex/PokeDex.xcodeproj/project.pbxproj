@@ -24,6 +24,8 @@
 		AA75C7262D1E3D26009B2A9D /* PokeDexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C7252D1E3D26009B2A9D /* PokeDexView.swift */; };
 		AA75C7282D1E7244009B2A9D /* PokemonServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C7272D1E7244009B2A9D /* PokemonServiceProtocol.swift */; };
 		AA75C72A2D1E9E39009B2A9D /* URLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C7292D1E9E39009B2A9D /* URLManager.swift */; };
+		AA75C72C2D1F9654009B2A9D /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */; };
+		AA75C72E2D1F9663009B2A9D /* DetaileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA75C72D2D1F9663009B2A9D /* DetaileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +46,8 @@
 		AA75C7252D1E3D26009B2A9D /* PokeDexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeDexView.swift; sourceTree = "<group>"; };
 		AA75C7272D1E7244009B2A9D /* PokemonServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonServiceProtocol.swift; sourceTree = "<group>"; };
 		AA75C7292D1E9E39009B2A9D /* URLManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLManager.swift; sourceTree = "<group>"; };
+		AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
+		AA75C72D2D1F9663009B2A9D /* DetaileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetaileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +101,7 @@
 				AA75C7212D1E3252009B2A9D /* PokemonCell.swift */,
 				AA75C7232D1E3496009B2A9D /* PokemonCollectionView.swift */,
 				AA75C7252D1E3D26009B2A9D /* PokeDexView.swift */,
+				AA75C72D2D1F9663009B2A9D /* DetaileViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -106,6 +111,7 @@
 			children = (
 				AA75C71F2D1D6D95009B2A9D /* MainViewModel.swift */,
 				AA75C7272D1E7244009B2A9D /* PokemonServiceProtocol.swift */,
+				AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -208,8 +214,10 @@
 				AA75C7192D1D635B009B2A9D /* PokemonDetailDataModel.swift in Sources */,
 				AA75C7032D1D1A9C009B2A9D /* AppDelegate.swift in Sources */,
 				AA75C7262D1E3D26009B2A9D /* PokeDexView.swift in Sources */,
+				AA75C72E2D1F9663009B2A9D /* DetaileViewController.swift in Sources */,
 				AA75C7042D1D1A9C009B2A9D /* MainViewController.swift in Sources */,
 				AA75C7052D1D1A9C009B2A9D /* SceneDelegate.swift in Sources */,
+				AA75C72C2D1F9654009B2A9D /* DetailViewModel.swift in Sources */,
 				AA75C7152D1D4FA9009B2A9D /* NetworkError.swift in Sources */,
 				AA75C7202D1D6D95009B2A9D /* MainViewModel.swift in Sources */,
 				AA75C7242D1E3496009B2A9D /* PokemonCollectionView.swift in Sources */,
