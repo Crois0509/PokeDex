@@ -23,8 +23,13 @@ final class MainViewModel {
     
     private func fetchPokemonData() {
         self.pokemonManager.fetchPokemonList(limit: 20, offset: 0)
-            .flatMap { self.pokemonManager.fetchPokemonDetails($0.results) }
-            .subscribe(onSuccess: { [weak self] details in
+            .flatMap { [weak self] in
+                guard let self else {
+                    return Single.error(NetworkError.dataFetchFail)
+                }
+                return self.pokemonManager.fetchPokemonDetails($0.results)
+            }
+            .subscribe(onSuccess: { [weak self] (details: [PokemonDetailDataModel]) in
                 guard let self else { return }
                 
                 self.fetchPokemonImage(details: details, self.pokemonImages)
