@@ -101,17 +101,22 @@ final class PokemonDetailView: UIView {
                 if data.types.count > 1 {
                     var types = [String](repeating: "", count: data.types.count)
                     for type in data.types {
-                        types[type.slot - 1] = type.type.name
+                        let typeName = PokemonTypeName.getKoreanTypeName(for: type.type.name)
+                        
+                        types[type.slot - 1] = typeName
                     }
                     type = types.joined(separator: ", ")
                     
                 } else {
-                    type = data.types.first?.type.name ?? ""
+                    let typeName = PokemonTypeName.getKoreanTypeName(for: data.types.first?.type.name ?? "")
+                    type = typeName
                 }
+                
+                let name = PokemonTranslator.getKoreanName(for: data.name)
                 
                 DispatchQueue.main.async {
                     self.labelConfig(id: data.id,
-                                     name: data.name,
+                                     name: name,
                                      type: type,
                                      height: data.height / 10,
                                      weight: data.weight / 10)
