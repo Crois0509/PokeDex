@@ -82,7 +82,7 @@ extension PokemonCollectionView: UICollectionViewDelegate {
         
         let detailView = PokemonDetailView(
             image: self.pokemonImageList[indexPath.item],
-            model: DetailViewModel(pokemonManager: PokemonManager(), id: indexPath.item)
+            model: DetailViewModel(pokemonManager: PokemonManager(), id: indexPath.item + 1)
         )
         
         guard let view = self.window?.rootViewController as? UINavigationController else { return }

@@ -95,7 +95,7 @@ final class PokemonDetailView: UIView {
     private func bind() {
         self.viewModel.pokemonDetailData
             .subscribe(onNext: { [weak self] data in
-                guard let self , let data = data.first else { return }
+                guard let self, let data = data.first else { return }
                 guard let type = data.types.first?.type.name else { return }
                 
                 DispatchQueue.main.async {
