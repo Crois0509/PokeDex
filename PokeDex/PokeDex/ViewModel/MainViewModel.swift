@@ -22,9 +22,14 @@ final class MainViewModel {
     }
     
     private func fetchPokemonData() {
-        self.pokemonManager.fetchPokemonList(limit: 20, offset: 0)
-            .flatMap { self.pokemonManager.fetchPokemonDetails($0.results) }
-            .subscribe(onSuccess: { [weak self] details in
+        self.pokemonManager.fetchPokemonData(urlType: .pokemonData(limit: 20, offset: 0), modelType: PokemonDataModel.self)
+            .flatMap { [weak self] in
+                guard let self else {
+                    return Single.error(NetworkError.dataFetchFail)
+                }
+                return self.pokemonManager.fetchPokemonDetails($0.results)
+            }
+            .subscribe(onSuccess: { [weak self] (details: [PokemonDetailDataModel]) in
                 guard let self else { return }
                 
                 self.fetchPokemonImage(details: details, self.pokemonImages)

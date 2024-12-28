@@ -10,8 +10,8 @@ import Foundation
 struct PokemonDetailDataModel: Decodable {
     let id: Int
     let name: String
-    let height: Int
-    let weight: Int
+    let height: Double
+    let weight: Double
     let types: [PokemonTypes]
 }
 
