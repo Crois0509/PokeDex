@@ -39,8 +39,8 @@ final class DetaileViewController: UIViewController {
     private func setupDetailViewLayout() {
         self.detailView.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(10)
-            $0.leading.trailing.equalToSuperview().inset(10)
-            $0.height.equalTo(200)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(self.view.bounds.height * 0.5)
         }
     }
 }
