@@ -11,6 +11,7 @@ enum URLManager {
     case pokemonData(limit: Int, offset: Int)
     case pokemonDetailData(id: Int)
     case pokemonImage(id: Int)
+    case otherURL(url: String)
     
     var sendURL: String {
         switch self {
@@ -20,6 +21,8 @@ enum URLManager {
             return "https://pokeapi.co/api/v2/pokemon/\(id)/"
         case .pokemonImage(id: let id):
             return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id).png"
+        case .otherURL(url: let url):
+            return url
         }
     }
 }
