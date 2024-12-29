@@ -126,11 +126,10 @@
 		AA75C70B2D1D1BB9009B2A9D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				AA9AA6A52D211F0E00EA7F09 /* DataModel */,
 				AA9AA6A32D211E5A00EA7F09 /* Network */,
+				AA9AA6A52D211F0E00EA7F09 /* DataModel */,
+				AA9AA6A62D2120CC00EA7F09 /* Translator */,
 				AA75C7292D1E9E39009B2A9D /* APIEndpoint.swift */,
-				AA75C7312D1FC737009B2A9D /* PokemonTranslator.swift */,
-				AA75C7332D1FC75E009B2A9D /* PokemonTypeTranslator.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -151,6 +150,15 @@
 				AA75C7182D1D635B009B2A9D /* PokemonDetailDataModel.swift */,
 			);
 			path = DataModel;
+			sourceTree = "<group>";
+		};
+		AA9AA6A62D2120CC00EA7F09 /* Translator */ = {
+			isa = PBXGroup;
+			children = (
+				AA75C7312D1FC737009B2A9D /* PokemonTranslator.swift */,
+				AA75C7332D1FC75E009B2A9D /* PokemonTypeTranslator.swift */,
+			);
+			path = Translator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
