@@ -55,7 +55,7 @@ final class NetworkManager {
     /// - Returns: 포켓몬 이미지
     func fetchImage(id: Int) -> UIImage? {
         var resultImage: UIImage?
-        guard let url = URL(string: URLManager.pokemonImage(id: id).sendURL) else { return nil }
+        guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return nil }
         
         DispatchQueue.global().sync {
             guard let imageData = try? Data(contentsOf: url) else {
