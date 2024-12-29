@@ -1,6 +1,7 @@
-# PokeDex
+# <img width="30" alt="Untitled (0)" src="https://github.com/user-attachments/assets/b202673f-0784-4190-bf0c-559f0bb38189" /> PokeDex
 
 // 완성 후 썸네일 추가
+
 
 **🎯프로젝트 목적**: MVVM 패턴과 RxSwift를 활용하여 포켓몬 도감 앱 만들기
 
