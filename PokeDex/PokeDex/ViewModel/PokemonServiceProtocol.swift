@@ -9,14 +9,14 @@ import UIKit
 import RxSwift
 
 protocol PokemonServiceProtocol {
-    func fetchPokemonData<T: Decodable>(urlType: URLManager, modelType: T.Type) -> Single<T>
+    func fetchPokemonData<T: Decodable>(urlType: APIEndpoint, modelType: T.Type) -> Single<T>
     func fetchPokemonDetails(_ datas: [PokemonData]) -> Single<[PokemonDetailDataModel]>
 }
 
 final class PokemonManager: PokemonServiceProtocol {
     
-    func fetchPokemonData<T: Decodable>(urlType: URLManager, modelType: T.Type) -> Single<T> {
-        guard let url = URL(string: urlType.sendURL) else {
+    func fetchPokemonData<T: Decodable>(urlType: APIEndpoint, modelType: T.Type) -> Single<T> {
+        guard let url = URL(string: urlType.urlString) else {
             print(NetworkError.invalidURL.errorDescription)
             return Single.error(NetworkError.invalidURL)
         }

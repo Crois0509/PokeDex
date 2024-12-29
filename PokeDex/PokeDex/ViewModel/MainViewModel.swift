@@ -22,14 +22,14 @@ final class MainViewModel {
     init(pokemonManager: PokemonServiceProtocol) {
         self.pokemonManager = pokemonManager
         
-        fetchPokemonData(urlType: .pokemonData(limit: self.limit, offset: self.offset))
+        fetchPokemonData(urlType: .pokemonList(limit: self.limit, offset: self.offset))
     }
     
     func reload() {
-        fetchPokemonData(urlType: .otherURL(url: self.nextURL))
+        fetchPokemonData(urlType: .customURL(url: self.nextURL))
     }
     
-    private func fetchPokemonData(urlType: URLManager) {
+    private func fetchPokemonData(urlType: APIEndpoint) {
         self.pokemonManager.fetchPokemonData(
             urlType: urlType,
             modelType: PokemonDataModel.self
