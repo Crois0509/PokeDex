@@ -8,10 +8,15 @@
 import UIKit
 import RxSwift
 
+// API 통신을 관리하는 네트워크 모델
 final class NetworkManager {
+    /// shard = 싱글톤 패턴으로 이를 활용하여 네트워크 작업 진행
     static let shared = NetworkManager()
     private init() {}
     
+    /// URL을 통해 API 통신을 통해 데이터를 디코딩하는 메소드
+    /// - Parameter url: 디코딩할 URL
+    /// - Returns: Single 타입 -> 디코딩한 값을 데이터 바인딩
     func fetch<T: Decodable>(url: URL) -> Single<T> {
         return Single.create { observer in
             
@@ -45,6 +50,9 @@ final class NetworkManager {
         }
     }
     
+    /// API 통신을 통해 포켓몬 이미지를 가져오는 메소드
+    /// - Parameter id:포켓몬의 도감 번호
+    /// - Returns: 포켓몬 이미지
     func fetchImage(id: Int) -> UIImage? {
         var resultImage: UIImage?
         guard let url = URL(string: URLManager.pokemonImage(id: id).sendURL) else { return nil }

@@ -126,8 +126,7 @@
 		AA75C70B2D1D1BB9009B2A9D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				AA75C7122D1D4D62009B2A9D /* NetworkManager.swift */,
-				AA75C7142D1D4FA9009B2A9D /* NetworkError.swift */,
+				AA9AA6A32D211E5A00EA7F09 /* Network */,
 				AA75C7162D1D6128009B2A9D /* PokemonDataModel.swift */,
 				AA75C7182D1D635B009B2A9D /* PokemonDetailDataModel.swift */,
 				AA75C7292D1E9E39009B2A9D /* URLManager.swift */,
@@ -135,6 +134,15 @@
 				AA75C7332D1FC75E009B2A9D /* PokemonTypeTranslator.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		AA9AA6A32D211E5A00EA7F09 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				AA75C7122D1D4D62009B2A9D /* NetworkManager.swift */,
+				AA75C7142D1D4FA9009B2A9D /* NetworkError.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
