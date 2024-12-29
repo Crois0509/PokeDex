@@ -13,8 +13,12 @@ final class PokemonCollectionView: UIView {
     
     private let viewModel = MainViewModel(pokemonManager: PokemonManager())
     
-    private var pokemonImageList: [UIImage] = []
+    private let disposeBag = DisposeBag()
     
+    private var didFeched: Bool = true
+    
+    private var pokemonImageList: [(image: UIImage,id: Int)] = []
+        
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         cv.delegate = self
@@ -63,17 +67,27 @@ final class PokemonCollectionView: UIView {
     
     private func bind() {
         self.viewModel.pokemonImages
-            .subscribe(onNext: { [weak self] images in
-                DispatchQueue.main.async {
-                    self?.pokemonImageList.append(contentsOf: images)
-                    self?.collectionView.reloadData()
-                }
+            .observe(on: MainScheduler.instance)
+            .compactMap { $0.first } // 첫 번째 요소를 안전하게 언래핑
+            .subscribe(onNext: { [weak self] data in
+                guard let self = self else { return }
+                
+                let image = data.image
+                let id = data.id
+                
+                // 정렬된 상태로 삽입
+                self.pokemonImageList.append((image: image, id: id))
+                self.pokemonImageList.sort(by: { $0.id < $1.id })
+                
+                self.collectionView.reloadData()
+                self.didFeched = false
                 
             }, onError: { error in
-                print(error)
-                
-            }).disposed(by: self.viewModel.disposeBag)
+                print("Error: \(error)")
+            })
+            .disposed(by: self.disposeBag)
     }
+
     
 }
 
@@ -81,12 +95,24 @@ extension PokemonCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailView = PokemonDetailView(
-            image: self.pokemonImageList[indexPath.item],
+            image: self.pokemonImageList[indexPath.item].image,
             model: DetailViewModel(pokemonManager: PokemonManager(), id: indexPath.item + 1)
         )
         
         guard let view = self.window?.rootViewController as? UINavigationController else { return }
         view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let currentOffset = scrollView.contentOffset.y
+        let visibleHeight = scrollView.contentSize.height
+        let totalHeight = scrollView.frame.height
+        let threshold = totalHeight - visibleHeight
+        
+        if currentOffset >= threshold && !self.didFeched {
+            self.viewModel.reload()
+            self.didFeched = true
+        }
     }
 }
 
@@ -101,7 +127,7 @@ extension PokemonCollectionView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.addImage(self.pokemonImageList[indexPath.item])
+        cell.addImage(self.pokemonImageList[indexPath.item].image)
         
         return cell
     }
