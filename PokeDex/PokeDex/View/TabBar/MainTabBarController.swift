@@ -38,6 +38,7 @@ private extension MainTabBarController {
         configure()
         setupLayout()
         displayViewController(0)
+        changeVC()
     }
     
     func configure() {
@@ -70,6 +71,16 @@ private extension MainTabBarController {
         selectedVC.didMove(toParent: self)
         
         self.currentVC = selectedVC
+    }
+    
+    func changeVC() {
+        self.mainTabBar.didSelect = { [weak self] index in
+            guard let self else { return }
+            
+            UIView.transition(with: view, duration: 0.3, options: .transitionCrossDissolve) {
+                self.displayViewController(index)
+            }
+        }
     }
     
 }

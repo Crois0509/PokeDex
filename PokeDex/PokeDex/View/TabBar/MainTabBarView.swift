@@ -15,6 +15,8 @@ enum TabBarItem: String, CaseIterable {
 
 final class MainTabBarView: UIView {
     
+    var didSelect: ((Int) -> Void)?
+    
     private lazy var tabBarView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
         cv.delegate = self
@@ -39,10 +41,14 @@ final class MainTabBarView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        
+        setupUI()
     }
 }
 
@@ -57,8 +63,8 @@ private extension MainTabBarView {
         self.backgroundColor = .personal
         self.layer.shadowColor = UIColor.black.cgColor
         self.layer.shadowOpacity = 0.3
-        self.layer.shadowOffset = .init(width: 0, height: 2)
-        self.layer.shadowRadius = 5
+        self.layer.shadowOffset = .init(width: 0, height: -2)
+        self.layer.shadowRadius = 1
         
         self.addSubview(self.tabBarView)
     }
@@ -72,7 +78,9 @@ private extension MainTabBarView {
 }
 
 extension MainTabBarView: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        didSelect?(indexPath.item)
+    }
 }
 
 extension MainTabBarView: UICollectionViewDataSource {

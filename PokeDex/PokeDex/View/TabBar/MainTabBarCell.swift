@@ -39,7 +39,7 @@ final class MainTabBarCell: UICollectionViewCell {
     }
     
     private func setupLabel() {
-        self.tabLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        self.tabLabel.font = UIFont.systemFont(ofSize: 25, weight: .regular)
         self.tabLabel.textColor = .personalDark
         self.tabLabel.numberOfLines = 1
         self.tabLabel.textAlignment = .center
