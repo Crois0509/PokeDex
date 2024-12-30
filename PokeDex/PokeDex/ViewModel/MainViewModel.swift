@@ -11,7 +11,7 @@ import RxSwift
 // 메인 뷰의 로직을 담당하는 모델
 final class MainViewModel {
     private let pokemonManager: PokemonServiceProtocol // 데이터 패치를 담당하는 인스턴스
-    private var limit: Int = 20
+    private var limit: Int = 30
     private var offset: Int = 0
     private var existentPokemons: Set<Int> = [] // 가져온 데이터의 중복 방지를 위한 데이터 타입
     private var nextURL: String = "" // 다음 데이터 리스트의 API 링크를 담을 프로퍼티
@@ -46,7 +46,7 @@ private extension MainViewModel {
             urlType: urlType,
             modelType: PokemonDataModel.self
         )
-        .observe(on: MainScheduler.asyncInstance)
+        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
         .flatMap { [weak self] in
             guard let self else {
                 return Single.error(NetworkError.dataFetchFail)
@@ -70,12 +70,14 @@ private extension MainViewModel {
     ///   - details: 포켓몬 디테일 데이터 타입
     ///   - subject: 불러온 데이터를 이벤트로 전달 받을 옵저버블 타입
     func fetchPokemonImage(details: [PokemonDetailDataModel], _ subject: BehaviorSubject<[(image: UIImage,id: Int)]>) {
+        var pokemonImages: [(image: UIImage, id: Int)] = []
         
         var uniqueDetails = details.filter { !self.existentPokemons.contains($0.id) }
         uniqueDetails.forEach { self.existentPokemons.insert($0.id) }
         uniqueDetails.sort(by: { $0.id < $1.id })
         
         Observable.from(uniqueDetails)
+            .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
             .map { data -> (UIImage, Int) in
                 guard let image = NetworkManager.shared.fetchImage(id: data.id) else {
                     subject.onError(NetworkError.dataFetchFail)
@@ -85,10 +87,13 @@ private extension MainViewModel {
             }
             .subscribe(onNext: { data in
                 
-                subject.onNext([(image: data.0,id: data.1)])
+                pokemonImages.append(data)
                 
             }, onError: { error in
                 subject.onError(error)
+                
+            }, onCompleted: {
+                subject.onNext(pokemonImages)
                 
             }).disposed(by: self.disposeBag)
     }

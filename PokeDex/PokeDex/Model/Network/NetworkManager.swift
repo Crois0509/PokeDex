@@ -21,6 +21,7 @@ final class NetworkManager {
         return Single.create { observer in
             
             let session = URLSession(configuration: .default)
+            session.configuration.httpMaximumConnectionsPerHost = 5
             session.dataTask(with: url) { (data, response, error) in
                 
                 guard let data, error == nil else {
