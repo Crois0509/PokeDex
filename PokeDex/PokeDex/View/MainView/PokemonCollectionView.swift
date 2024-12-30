@@ -75,14 +75,15 @@ private extension PokemonCollectionView {
     func bind() {
         self.viewModel.pokemonImages
             .observe(on: MainScheduler.instance)
-            .compactMap { $0.first }
+//            .compactMap { $0.first }
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
                 
-                let image = data.image
-                let id = data.id
+//                let image = data.image
+//                let id = data.id
                 
-                self.pokemonImageList.append((image: image, id: id))
+//                self.pokemonImageList.append((image: image, id: id))
+                self.pokemonImageList += data
                 self.pokemonImageList.sort(by: { $0.id < $1.id })
                 
                 self.collectionView.reloadData()
@@ -113,13 +114,13 @@ extension PokemonCollectionView: UICollectionViewDelegate {
         view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
     }
     
-    // 스크롤이 끝났을 때 액션 구현
-    // 현재 스크롤 위치를 확인하여 스크롤이 하단에 있는 경우 데이터를 더 불러온다.
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    // 스크롤이 진행 중일 때 액션
+    // 현재 스크롤 위치를 확인하여 스크롤이 최하단에 있는 경우 데이터를 더 불러온다.
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let visibleHeight = scrollView.contentSize.height
         let totalHeight = scrollView.frame.height
-        let threshold = totalHeight - visibleHeight
+        let threshold = visibleHeight - totalHeight - 500
         
         if currentOffset >= threshold && !self.didFeched {
             self.viewModel.reload()
