@@ -45,8 +45,6 @@ final class PokemonCollectionView: UIView {
     
     private var activityIndicator = UIActivityIndicatorView()
     
-    private let blockingView = UIView()
-    
     // MARK: - PokemonCollectionView Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -65,82 +63,73 @@ final class PokemonCollectionView: UIView {
 
 // MARK: - PokemonCollectionView UI Setting Method
 private extension PokemonCollectionView {
+    
     /// 모든 UI를 세팅하는 메소드
     func setupUI() {
         configure()
-        setupBlockingView()
         setupActivityIndicator()
         setupLayout()
     }
     
+    /// 뷰를 세팅하는 메소드
     func configure() {
         self.backgroundColor = UIColor.personalDark
         [self.collectionView,
-         self.blockingView,
+//         self.blockingView,
          self.activityIndicator].forEach { self.addSubview($0) }
     }
     
+    /// 로딩바를 세팅하는 메소드
     func setupActivityIndicator() {
         self.activityIndicator.color = .white
         self.activityIndicator.style = .large
+        self.activityIndicator.backgroundColor = .black.withAlphaComponent(0.3)
         self.activityIndicator.isHidden = true
     }
     
-    func dataFetched() {
-        switch self.didFeched {
-        case true:
-            self.activityIndicator.isHidden = false
-            self.activityIndicator.startAnimating()
-            self.blockingView.isHidden = false
-            
-        case false:
-            self.activityIndicator.isHidden = true
-            self.activityIndicator.stopAnimating()
-            self.blockingView.isHidden = true
-        }
-    }
-    
-    func setupBlockingView() {
-        self.blockingView.backgroundColor = .black
-        self.blockingView.alpha = 0.3
-        self.blockingView.isHidden = true
-    }
-    
+    /// 모든 UI의 레이아웃을 설정하는 메소드
     func setupLayout() {
         self.collectionView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(10)
         }
         
-        self.blockingView.snp.makeConstraints {
+        self.activityIndicator.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-        
-        self.activityIndicator.snp.makeConstraints {
-            $0.center.equalToSuperview()
-            $0.width.height.equalTo(50)
+    }
+    
+    /// 데이터 로드 상태에 따라 로딩바 액션을 지정하는 메소드
+    func dataFetched() {
+        switch self.didFeched {
+        case true:
+            self.activityIndicator.isHidden = false
+            self.activityIndicator.startAnimating()
+            
+        case false:
+            self.activityIndicator.isHidden = true
+            self.activityIndicator.stopAnimating()
         }
     }
     
     /// 데이터 바인딩 메소드
     func bind() {
         self.viewModel.pokemonImages
+            .withUnretained(self)
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] data in
-                guard let self = self else { return }
+            .subscribe(onNext: { owner, data in
                 
-                self.pokemonImageList += data
-                self.pokemonImageList.sort(by: { $0.id < $1.id })
+                owner.pokemonImageList += data
+                owner.pokemonImageList.sort(by: { $0.id < $1.id })
                 
-                self.collectionView.reloadData()
-                self.didFeched = false
-                self.dataFetched()
+                owner.collectionView.reloadData()
+                owner.didFeched = false
+                owner.dataFetched()
                 
             }, onError: { error in
                 print("Error: \(error)")
                 
             }).disposed(by: self.disposeBag)
     }
-    
     
 }
 
