@@ -8,6 +8,11 @@
 import UIKit
 import SnapKit
 
+enum TabBarItem: String, CaseIterable {
+    case main = "도감"
+    case search = "검색"
+}
+
 final class MainTabBarView: UIView {
     
     private lazy var tabBarView: UICollectionView = {
@@ -72,11 +77,17 @@ extension MainTabBarView: UICollectionViewDelegate {
 
 extension MainTabBarView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        <#code#>
+        return TabBarItem.allCases.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainTabBarCell.id, for: indexPath) as? MainTabBarCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.configLabel(title: TabBarItem.allCases[indexPath.item].rawValue)
+        
+        return cell
     }
     
     
