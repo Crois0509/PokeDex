@@ -1,7 +1,6 @@
 # <img width="30" alt="Untitled (0)" src="https://github.com/user-attachments/assets/b202673f-0784-4190-bf0c-559f0bb38189" /> PokeDex
 
-// 완성 후 썸네일 추가
-
+![Group 9](https://github.com/user-attachments/assets/ea4b887b-c45a-4917-992d-8f732d479bb1)
 
 **🎯프로젝트 목적**: MVVM 패턴과 RxSwift를 활용하여 포켓몬 도감 앱 만들기
 
@@ -106,7 +105,9 @@
 
 ## 💡 주요 기능
 
-// 추후 업데이트
+1. 모든 포켓몬의 목록 살펴보기
+
+2. 포켓몬에 대한 상세 정보 확인하기
 
 ***
 
@@ -308,5 +309,81 @@ RxSwift 코드도 함께 사용하면 구독을 통한 기능의 확장성도 �
 커밋도 추상화를 완료한 뒤에 한 탓에 기록이 없다...
 
 앞으로는 이런 작업을 할 때 기록을 남겨가며 작업해야겠다고 생각했다. 
+
+### 5) 무한 스크롤 버그?
+이번 과제의 마지막 단계에서는 '무한 스크롤'을 구현해야 한다. 사실 이전에 무한 스크롤이 어떻게 구현되는 것인지 궁금해서 찾아보고 연습한 적이 있었기 때문에 구현은 어렵지 않으리라고 생각했다.
+
+우선, 무한 스크롤이 작동되는 지점을 설정해줘야 하는데, 컬렉션뷰의 델리게이트 메소드를 활용했다.
+```swift
+func scrollViewDidScroll(_ scrollView: UIScrollView) {
+     let currentOffset = scrollView.contentOffset.y
+     let visibleHeight = scrollView.contentSize.height
+     let totalHeight = scrollView.frame.height
+     let threshold = visibleHeight - totalHeight
+        
+     if currentOffset >= threshold && !self.didFeched {
+          self.viewModel.reload()
+          self.didFeched = true
+          self.layoutIfNeeded()
+     }
+}
+```
+위 코드는 컬렉션뷰를 스크롤 중일 때, 현재 스크롤의 위치를 확인하여 스크롤의 위치가 컬렉션뷰의 컨텐츠뷰 최하단에 위치해 있는지 검증한다.
+그 뒤, 만약 스크롤의 위치가 최하단에 있고, 현재 데이터를 패치하고 있지 않다면 `reload` 메소드를 호출한다.
+
+`reload` 메소드는 현재까지 불려진 포켓몬 리스트의 다음 포켓몬 리스트를 API 통신을 통해 불러오는 메소드이다.
+이 메소드를 통해 데이터를 새로 불러오면, 컬렉션뷰의 데이터 소스에 변화가 생기고 새롭게 추가된 포켓몬들이 셀에 표시되게 된다.
+
+![무제3](https://github.com/user-attachments/assets/b39755c5-a83f-4017-bbe3-614bf111eb77)
+
+이렇게 무한 스크롤을 구현하긴 했지만... 몇가지 문제가 발생했다.
+
+첫 번째로, 포켓몬에 대한 데이터가 무작위로 들어오는 바람에 셀의 위치가 계속해서 뒤바뀌는 듯한 문제가 있었다. 보고있으면 어지럽고... 완성된 앱이라는 감상을 주지 못한다.
+
+두 번째로, 데이터가 중첩되거나 스킵되는 문제가 발생했다. 스크롤을 계속 반복해서 계속 최하단을 유지하면, 이미 데이터를 불러오고 있는데도 또 새로운 데이터를 불러오는 탓에 일부 데이터가 스킵되거나 중첩되는 문제가 발생했다.
+이 문제는 `didFetched`라는 `Bool` 타입의 변수를 만들어서 true라면 `reload`가 되지 않도록 하여 방지했다고 생각했는데, 여전히 문제가 발생하고 있었다.
+
+마지막으로 ⚠️ Synchronization anomaly was detected. 라는 에러가 발생하는 문제이다.
+
+이는 RxSwift에서 경고하는 에러로 무한 스크롤을 하다보면 때때로 발생했는데, 서로 다른 스레드에서 동시에 이벤트를 방출하거나 하는 경우 발생하는 에러라고 한다.
+에러문구를 쭉 살펴보면 `.observe(on:MainScheduler.asyncInstance)`를 설정하여 해결하라고 나온다.
+
+결과적으로 보면 위의 세 문제는 모두 같은 이유 때문에 발생하는 문제이다. **데이터를 로드하는 작업이 어딘가에서 동시에 이루어진다는 것이다.**
+
+이를 어떻게 해결하면 좋을까. 그리고 어떻게 해결하면 UX도 개선할 수 있을까 고민하다가 생각한 것이 로딩의 구현이었다.
+
+스크롤을 최하단으로 내리게 되면 데이터 로드가 발생하니까 그 동안은 스크롤을 못하도록 막고, 사용자에게는 데이터를 불러오는 중이라는 것을 알려주기 위해 `UIActiveIndicvatorView`를 사용하여 화면에 로딩바를 표현하는 것이다.
+이렇게 하면 스크롤로 인한 데이터 로드가 딱 1번씩만 발생하게 되고, 이를 통해 중복 호출이나 데이터 중첩 등을 한 번에 해결할 수 있을 것이라고 생각했다.
+
+구현은 간단했다. 먼저 `UIActiveIndicvatorView`의 객체를 만들어준다.
+```swift
+private var activityIndicator = UIActivityIndicatorView()
+```
+그리고 어떤 조건에서 이 객체가 작동될 것인지 메소드를 작성해주어야 하는데, 이미 만들어뒀던 `didFetched`를 활용하기로 했다.
+```swift
+func dataFetched() {
+     switch self.didFeched {
+     case true:
+          self.activityIndicator.isHidden = false
+          self.activityIndicator.startAnimating()
+            
+     case false:
+          self.activityIndicator.isHidden = true
+          self.activityIndicator.stopAnimating()
+     }
+}
+```
+위의 코드는 현재 `didFetched`의 상태에 따라 분기를 나눠 로딩바를 어떻게 표현할 것인지 결정하는 메소드이다.
+만약 현재 데이터를 불러오고 있다면 로딩바가 표현되며 더이상 스크롤할 수 없게 되고, 데이터 패치가 완료되면 로딩바가 사라지며 다시 정상작동이 가능하도록 하였다.
+
+| 로딩바 추가 전 | 로딩바 추가 후 |
+| :-: | :-: |
+| ![무제3](https://github.com/user-attachments/assets/c5e61f51-c0ad-4a17-b5ce-3e34f10d6819) | ![무제4](https://github.com/user-attachments/assets/1ef5981b-f451-4f64-9ede-90b8fd6bfd55) |
+
+이렇게 구현하니 마치 실제 앱 같기도 하고... 안정성이 훨씬 커졌다.
+다만, 이전보다 데이터를 불러오는 속도가 느리기 때문에 사용자에게 호불호가 갈릴 수 있다고 생각한다.
+
+지금은 데이터를 한 번에 30개씩 불러오고 30개가 다 불러와지면 로딩이 끝나는 식으로 구현이 되어 있는데, 이것을 줄이면 더 빠른 작동도 가능할 것이다.
+잦은 새로고침과 빠른 로딩, 비교적 적은 새로고침과 느린 로딩 둘 중 어느 것이 UX에 더 적합한지는 어려운 문제 같다.
 
 
