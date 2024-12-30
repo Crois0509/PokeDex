@@ -142,14 +142,14 @@ private extension PokemonDetailView {
         self.viewModel.pokemonDetailData
             .observe(on: MainScheduler.instance)
             .compactMap { $0.first }
-            .subscribe(onNext: { [weak self] data in
-                guard let self else { return }
+            .withUnretained(self)
+            .subscribe(onNext: { owner, data in
                 
-                let type = convertPokemonTypes(data.types)
+                let type = owner.convertPokemonTypes(data.types)
                 
                 let name = PokemonTranslator.getKoreanName(for: data.name)
                 
-                self.labelConfig(id: data.id,
+                owner.labelConfig(id: data.id,
                                  name: name,
                                  type: type,
                                  height: data.height / 10,
