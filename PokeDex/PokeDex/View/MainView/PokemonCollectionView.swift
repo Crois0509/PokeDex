@@ -82,28 +82,28 @@ private extension PokemonCollectionView {
     
     func setupActivityIndicator() {
         self.activityIndicator.color = .white
-        
+        self.activityIndicator.style = .large
+        self.activityIndicator.isHidden = true
+    }
+    
+    func dataFetched() {
         switch self.didFeched {
         case true:
             self.activityIndicator.isHidden = false
             self.activityIndicator.startAnimating()
+            self.blockingView.isHidden = false
             
         case false:
             self.activityIndicator.isHidden = true
             self.activityIndicator.stopAnimating()
+            self.blockingView.isHidden = true
         }
     }
     
     func setupBlockingView() {
         self.blockingView.backgroundColor = .black
         self.blockingView.alpha = 0.3
-        
-        switch self.didFeched {
-        case true:
-            self.blockingView.isHidden = false
-        case false:
-            self.blockingView.isHidden = true
-        }
+        self.blockingView.isHidden = true
     }
     
     func setupLayout() {
@@ -133,8 +133,7 @@ private extension PokemonCollectionView {
                 
                 self.collectionView.reloadData()
                 self.didFeched = false
-                self.setupActivityIndicator()
-                self.setupBlockingView()
+                self.dataFetched()
                 
             }, onError: { error in
                 print("Error: \(error)")
@@ -172,8 +171,7 @@ extension PokemonCollectionView: UICollectionViewDelegate {
         if currentOffset >= threshold && !self.didFeched {
             self.viewModel.reload()
             self.didFeched = true
-            self.setupActivityIndicator()
-            self.setupBlockingView()
+            self.dataFetched()
             self.layoutIfNeeded()
         }
     }

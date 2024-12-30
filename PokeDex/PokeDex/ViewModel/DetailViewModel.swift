@@ -31,6 +31,7 @@ final class DetailViewModel {
     /// - Parameter id: 불러올 포켓몬의 도감 번호
     private func fetchPokemonData(id: Int) {
         self.pokemonManager.fetchPokemonData(urlType: .pokemonDetails(id: id), modelType: PokemonDetailDataModel.self)
+            .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
             .subscribe(onSuccess: { [weak self] (details: PokemonDetailDataModel) in
                 guard let self else { return }
                 

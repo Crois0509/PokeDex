@@ -46,7 +46,7 @@ private extension MainViewModel {
             urlType: urlType,
             modelType: PokemonDataModel.self
         )
-        .observe(on: MainScheduler.asyncInstance)
+        .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
         .flatMap { [weak self] in
             guard let self else {
                 return Single.error(NetworkError.dataFetchFail)
@@ -77,6 +77,7 @@ private extension MainViewModel {
         uniqueDetails.sort(by: { $0.id < $1.id })
         
         Observable.from(uniqueDetails)
+            .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
             .map { data -> (UIImage, Int) in
                 guard let image = NetworkManager.shared.fetchImage(id: data.id) else {
                     subject.onError(NetworkError.dataFetchFail)

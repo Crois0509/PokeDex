@@ -149,13 +149,12 @@ private extension PokemonDetailView {
                 
                 let name = PokemonTranslator.getKoreanName(for: data.name)
                 
-                DispatchQueue.main.async {
-                    self.labelConfig(id: data.id,
-                                     name: name,
-                                     type: type,
-                                     height: data.height / 10,
-                                     weight: data.weight / 10)
-                }
+                self.labelConfig(id: data.id,
+                                 name: name,
+                                 type: type,
+                                 height: data.height / 10,
+                                 weight: data.weight / 10)
+                
                 
             }, onError: { error in
                 print(error)
