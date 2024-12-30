@@ -26,6 +26,14 @@ final class MainTabBarCell: UICollectionViewCell {
         setupUI()
     }
     
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if self.tabLabel.frame.contains(point) {
+            return super.hitTest(point, with: event)
+        } else {
+            return nil
+        }
+    }
+    
     private func setupUI() {
         configure()
         setupLabel()

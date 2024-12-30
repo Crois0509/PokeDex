@@ -39,6 +39,8 @@ final class MainTabBarView: UIView {
         return layout
     }()
     
+    private let effectView = SelectEffect()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -57,6 +59,7 @@ private extension MainTabBarView {
     func setupUI() {
         configure()
         setupTabBarViewLayout()
+        setupEffectView()
     }
     
     func configure() {
@@ -66,7 +69,7 @@ private extension MainTabBarView {
         self.layer.shadowOffset = .init(width: 0, height: -2)
         self.layer.shadowRadius = 1
         
-        self.addSubview(self.tabBarView)
+        [self.tabBarView, self.effectView].forEach { self.addSubview($0) }
     }
     
     func setupTabBarViewLayout() {
@@ -75,11 +78,31 @@ private extension MainTabBarView {
         }
     }
     
+    func setupEffectView() {
+        self.effectView.configLabel(title: TabBarItem.main.rawValue)
+        let constraintX: CGFloat = (UIScreen.main.bounds.width / 2) / 2 - 75
+        self.effectView.frame = .init(x: constraintX, y: 20, width: 150, height: 60)
+    }
+    
+    func moveEffectView(_ title: TabBarItem) {
+        self.effectView.configLabel(title: title.rawValue)
+        
+        UIView.animate(withDuration: 0.3) {
+            switch title {
+            case .main:
+                self.effectView.frame.origin.x = (self.bounds.width / 2) / 2 - 75
+            case .search:
+                self.effectView.frame.origin.x = self.bounds.width - ((self.bounds.width / 2) / 2 + 75)
+            }
+        }
+    }
+    
 }
 
 extension MainTabBarView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         didSelect?(indexPath.item)
+        moveEffectView(TabBarItem.allCases[indexPath.item])
     }
 }
 
