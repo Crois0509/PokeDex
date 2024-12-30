@@ -43,19 +43,23 @@ final class PokemonCollectionView: UIView {
         return layout
     }()
     
+    private var activityIndicator = UIActivityIndicatorView()
+    
+    private let blockingView = UIView()
+    
     // MARK: - PokemonCollectionView Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setupUI()
         bind()
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        setupUI()
         bind()
+        setupUI()
     }
 }
 
@@ -63,11 +67,57 @@ final class PokemonCollectionView: UIView {
 private extension PokemonCollectionView {
     /// 모든 UI를 세팅하는 메소드
     func setupUI() {
+        configure()
+        setupBlockingView()
+        setupActivityIndicator()
+        setupLayout()
+    }
+    
+    func configure() {
         self.backgroundColor = UIColor.personalDark
-        self.addSubview(self.collectionView)
+        [self.collectionView,
+         self.blockingView,
+         self.activityIndicator].forEach { self.addSubview($0) }
+    }
+    
+    func setupActivityIndicator() {
+        self.activityIndicator.color = .white
         
+        switch self.didFeched {
+        case true:
+            self.activityIndicator.isHidden = false
+            self.activityIndicator.startAnimating()
+            
+        case false:
+            self.activityIndicator.isHidden = true
+            self.activityIndicator.stopAnimating()
+        }
+    }
+    
+    func setupBlockingView() {
+        self.blockingView.backgroundColor = .black
+        self.blockingView.alpha = 0.3
+        
+        switch self.didFeched {
+        case true:
+            self.blockingView.isHidden = false
+        case false:
+            self.blockingView.isHidden = true
+        }
+    }
+    
+    func setupLayout() {
         self.collectionView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(10)
+        }
+        
+        self.blockingView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        self.activityIndicator.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.width.height.equalTo(50)
         }
     }
     
@@ -75,19 +125,16 @@ private extension PokemonCollectionView {
     func bind() {
         self.viewModel.pokemonImages
             .observe(on: MainScheduler.instance)
-//            .compactMap { $0.first }
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
                 
-//                let image = data.image
-//                let id = data.id
-                
-//                self.pokemonImageList.append((image: image, id: id))
                 self.pokemonImageList += data
                 self.pokemonImageList.sort(by: { $0.id < $1.id })
                 
                 self.collectionView.reloadData()
                 self.didFeched = false
+                self.setupActivityIndicator()
+                self.setupBlockingView()
                 
             }, onError: { error in
                 print("Error: \(error)")
@@ -120,11 +167,13 @@ extension PokemonCollectionView: UICollectionViewDelegate {
         let currentOffset = scrollView.contentOffset.y
         let visibleHeight = scrollView.contentSize.height
         let totalHeight = scrollView.frame.height
-        let threshold = visibleHeight - totalHeight - 500
+        let threshold = visibleHeight - totalHeight
         
         if currentOffset >= threshold && !self.didFeched {
             self.viewModel.reload()
             self.didFeched = true
+            self.setupActivityIndicator()
+            self.setupBlockingView()
             self.layoutIfNeeded()
         }
     }
