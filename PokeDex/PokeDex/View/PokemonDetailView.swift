@@ -9,21 +9,23 @@ import UIKit
 import SnapKit
 import RxSwift
 
+// 포켓몬 디테일 뷰
 final class PokemonDetailView: UIView {
     
     private let disposeBag = DisposeBag()
     
-    private let viewModel: DetailViewModel
+    private let viewModel: DetailViewModel // 초기화시 주입
     
     private let imageView = UIImageView()
     private let nameLabel = UILabel()
-    private let detailLabel = UILabel()
+    private let infoLabel = UILabel()
     
+    // MARK: - PokemonDetailView Initializer
     init(image: UIImage, model: DetailViewModel) {
         self.viewModel = model
         super.init(frame: .zero)
         
-        configure()
+        setupUI()
         bind()
         self.imageView.image = image
     }
@@ -31,28 +33,39 @@ final class PokemonDetailView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+// MARK: - PokemonDetailView UI Setting Method
+private extension PokemonDetailView {
     
-    private func configure() {
+    /// 모든 UI를 세팅하는 메소드
+    func setupUI() {
+        configure()
+        setupImageView()
+        setupNameLabel()
+        setupInfoLabel()
+        setupLayout()
+    }
+    
+    /// UIView 설정
+    func configure() {
         self.backgroundColor = .personalDark
         self.layer.cornerRadius = 20
         self.clipsToBounds = true
         [self.imageView,
          self.nameLabel,
-         self.detailLabel].forEach { self.addSubview($0) }
-        
-        setupImage()
-        setupNameLabel()
-        setupDetailLabel()
-        setupLayout()
+         self.infoLabel].forEach { self.addSubview($0) }
     }
     
-    private func setupImage() {
+    /// 이미지뷰를 설정하는 메소드
+    func setupImageView() {
         self.imageView.contentMode = .scaleAspectFit
         self.imageView.backgroundColor = .clear
         self.imageView.image = UIImage(systemName: "person") // 테스트
     }
     
-    private func setupNameLabel() {
+    /// 이름 레이블을 설정하는 메소드
+    func setupNameLabel() {
         self.nameLabel.font = UIFont.boldSystemFont(ofSize: 30)
         self.nameLabel.textAlignment = .center
         self.nameLabel.textColor = .white
@@ -60,15 +73,17 @@ final class PokemonDetailView: UIView {
         self.nameLabel.backgroundColor = .clear
     }
     
-    private func setupDetailLabel() {
-        self.detailLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
-        self.detailLabel.textAlignment = .center
-        self.detailLabel.textColor = .white
-        self.detailLabel.numberOfLines = 3
-        self.detailLabel.backgroundColor = .clear
+    /// 정보 레이블을 설정하는 메소드
+    func setupInfoLabel() {
+        self.infoLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
+        self.infoLabel.textAlignment = .center
+        self.infoLabel.textColor = .white
+        self.infoLabel.numberOfLines = 3
+        self.infoLabel.backgroundColor = .clear
     }
     
-    private func setupLayout() {
+    /// 모든 UI의 레이아웃을 설정하는 메소드
+    func setupLayout() {
         self.imageView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(20)
             $0.centerX.equalToSuperview()
@@ -80,37 +95,57 @@ final class PokemonDetailView: UIView {
             $0.centerX.equalToSuperview()
         }
         
-        self.detailLabel.snp.makeConstraints {
+        self.infoLabel.snp.makeConstraints {
             $0.top.equalTo(self.nameLabel.snp.bottom).offset(10)
             $0.centerX.equalToSuperview()
         }
     }
     
-    private func labelConfig(id: Int, name: String, type: String, height: Double, weight: Double) {
+    /// 레이블 값을 설정하는 메소드
+    /// - Parameters:
+    ///   - id: 포켓몬 도감 번호
+    ///   - name: 포켓몬 이름
+    ///   - type: 포켓몬의 타입
+    ///   - height: 포켓몬의 키
+    ///   - weight: 포켓몬의 무게
+    func labelConfig(id: Int, name: String, type: String, height: Double, weight: Double) {
         self.nameLabel.text = "No.\(id) \(name)"
-        self.detailLabel.text = "타입: \(type)\n키: \(height) m\n몸무게: \(weight) kg"
-        self.detailLabel.lineSpacing(10)
+        self.infoLabel.text = "타입: \(type)\n키: \(height) m\n몸무게: \(weight) kg"
+        self.infoLabel.lineSpacing(10)
     }
     
-    private func bind() {
-        self.viewModel.pokemonDetailData
-            .subscribe(onNext: { [weak self] data in
-                guard let self, let data = data.first else { return }
-                var type: String = ""
+    /// 포켓몬의 타입 목록을 String 타입으로 변환하는 메소드
+    /// - Parameter pokemonTypes: 포켓몬의 타입 목록
+    /// - Returns: 포켓몬의 타입(String)
+    func convertPokemonTypes(_ pokemonTypes: [PokemonTypes]) -> String {
+        var result: String = ""
+        
+        if pokemonTypes.count > 1 {
+            var types = [String](repeating: "", count: pokemonTypes.count)
+            for type in pokemonTypes {
+                let typeName = PokemonTypeName.getKoreanTypeName(for: type.type.name)
                 
-                if data.types.count > 1 {
-                    var types = [String](repeating: "", count: data.types.count)
-                    for type in data.types {
-                        let typeName = PokemonTypeName.getKoreanTypeName(for: type.type.name)
-                        
-                        types[type.slot - 1] = typeName
-                    }
-                    type = types.joined(separator: ", ")
-                    
-                } else {
-                    let typeName = PokemonTypeName.getKoreanTypeName(for: data.types.first?.type.name ?? "")
-                    type = typeName
-                }
+                types[type.slot - 1] = typeName
+            }
+            result = types.joined(separator: ", ")
+            
+        } else {
+            let typeName = PokemonTypeName.getKoreanTypeName(for: pokemonTypes.first?.type.name ?? "")
+            result = typeName
+        }
+        
+        return result
+    }
+    
+    /// 데이터 바인딩 메소드
+    func bind() {
+        self.viewModel.pokemonDetailData
+            .observe(on: MainScheduler.instance)
+            .compactMap { $0.first }
+            .subscribe(onNext: { [weak self] data in
+                guard let self else { return }
+                
+                let type = convertPokemonTypes(data.types)
                 
                 let name = PokemonTranslator.getKoreanName(for: data.name)
                 
@@ -123,14 +158,17 @@ final class PokemonDetailView: UIView {
                 }
                 
             }, onError: { error in
-            
-                
+                print(error)
                 
             }).disposed(by: self.disposeBag)
     }
 }
 
+// MARK: - UILabel Extension
 extension UILabel {
+    
+    /// 텍스트의 줄 간격을 설정하는 메소드
+    /// - Parameter spacing: 줄 간격 크기
     func lineSpacing(_ spacing: CGFloat) {
         guard let text = self.text else { return }
         
