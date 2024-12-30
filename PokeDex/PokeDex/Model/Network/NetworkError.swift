@@ -7,11 +7,13 @@
 
 import Foundation
 
+// 네트워크 에러를 정의해두는 enum
 enum NetworkError: LocalizedError {
     case invalidURL
     case dataFetchFail
     case decodingFail
     
+    // 네트워크 에러의 각 케이스 별 메세지
     var errorDescription: String {
         switch self {
         case .invalidURL:

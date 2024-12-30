@@ -7,7 +7,9 @@
 
 import Foundation
 
+// 포켓몬의 타입을 한국어로 변환해주는 enum
 enum PokemonTypeName {
+    // 타입의 영어이름과 한국어 이름을 매칭한 배열
     private static let koreanTypeName: [String: String] = [
         "normal": "노말",
         "fire": "불꽃",
@@ -29,6 +31,9 @@ enum PokemonTypeName {
         "fairy": "페어리"
     ]
     
+    /// 영어로 된 타입 이름을 한국어로 바꿔주는 메소드
+    /// - Parameter type: 타입의 영어명
+    /// - Returns: 타입의 한국어명 -> 매칭되는 값이 없을 경우 입력한 영어명을 그대로 사용
     static func getKoreanTypeName(for type: String) -> String {
         return koreanTypeName[type.lowercased()] ?? type
     }

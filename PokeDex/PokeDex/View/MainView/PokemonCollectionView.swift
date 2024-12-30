@@ -9,16 +9,17 @@ import UIKit
 import SnapKit
 import RxSwift
 
+// 포켓몬 도감 리스트를 보여주는 뷰
 final class PokemonCollectionView: UIView {
     
-    private let viewModel = MainViewModel(pokemonManager: PokemonManager())
+    private let viewModel = MainViewModel(pokemonManager: PokemonManager()) // 로직 및 데이터 바인딩 객체
     
     private let disposeBag = DisposeBag()
     
-    private var didFeched: Bool = true
+    private var didFeched: Bool = true // 현재 데이터를 불러오는 중인지 확인
     
     private var pokemonImageList: [(image: UIImage,id: Int)] = []
-        
+    
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         cv.delegate = self
@@ -42,6 +43,7 @@ final class PokemonCollectionView: UIView {
         return layout
     }()
     
+    // MARK: - PokemonCollectionView Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -55,8 +57,12 @@ final class PokemonCollectionView: UIView {
         setupUI()
         bind()
     }
-    
-    private func setupUI() {
+}
+
+// MARK: - PokemonCollectionView UI Setting Method
+private extension PokemonCollectionView {
+    /// 모든 UI를 세팅하는 메소드
+    func setupUI() {
         self.backgroundColor = UIColor.personalDark
         self.addSubview(self.collectionView)
         
@@ -65,17 +71,17 @@ final class PokemonCollectionView: UIView {
         }
     }
     
-    private func bind() {
+    /// 데이터 바인딩 메소드
+    func bind() {
         self.viewModel.pokemonImages
             .observe(on: MainScheduler.instance)
-            .compactMap { $0.first } // 첫 번째 요소를 안전하게 언래핑
+            .compactMap { $0.first }
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
                 
                 let image = data.image
                 let id = data.id
                 
-                // 정렬된 상태로 삽입
                 self.pokemonImageList.append((image: image, id: id))
                 self.pokemonImageList.sort(by: { $0.id < $1.id })
                 
@@ -84,14 +90,18 @@ final class PokemonCollectionView: UIView {
                 
             }, onError: { error in
                 print("Error: \(error)")
-            })
-            .disposed(by: self.disposeBag)
+                
+            }).disposed(by: self.disposeBag)
     }
-
+    
     
 }
 
+// MARK: - PokemonCollectionView CollectionView Delegate Method
 extension PokemonCollectionView: UICollectionViewDelegate {
+    
+    // 셀이 선택되었을 때 액션 구현
+    // 선택된 셀의 포켓몬 정보를 확인할 수 있도록 네비게이션 구현
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailView = PokemonDetailView(
@@ -103,6 +113,8 @@ extension PokemonCollectionView: UICollectionViewDelegate {
         view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
     }
     
+    // 스크롤이 끝났을 때 액션 구현
+    // 현재 스크롤 위치를 확인하여 스크롤이 하단에 있는 경우 데이터를 더 불러온다.
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let currentOffset = scrollView.contentOffset.y
         let visibleHeight = scrollView.contentSize.height
@@ -112,16 +124,20 @@ extension PokemonCollectionView: UICollectionViewDelegate {
         if currentOffset >= threshold && !self.didFeched {
             self.viewModel.reload()
             self.didFeched = true
+            self.layoutIfNeeded()
         }
     }
 }
 
+// MARK: - PokemonCollectionView CollectionView DataSource Method
 extension PokemonCollectionView: UICollectionViewDataSource {
     
+    // 컬렉션뷰 아이템 수를 설정하는 메소드
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.pokemonImageList.count
     }
     
+    // 컬렉션뷰의 아이템을 설정하는 메소드
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.id, for: indexPath) as? PokemonCell else {
             return UICollectionViewCell()

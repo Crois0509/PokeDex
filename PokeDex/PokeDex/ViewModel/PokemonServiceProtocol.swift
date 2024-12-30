@@ -8,15 +8,22 @@
 import UIKit
 import RxSwift
 
+// 뷰 모델이 공통으로 사용할 메소드를 정의하는 프로토콜
 protocol PokemonServiceProtocol {
-    func fetchPokemonData<T: Decodable>(urlType: URLManager, modelType: T.Type) -> Single<T>
+    func fetchPokemonData<T: Decodable>(urlType: APIEndpoint, modelType: T.Type) -> Single<T>
     func fetchPokemonDetails(_ datas: [PokemonData]) -> Single<[PokemonDetailDataModel]>
 }
 
+// 뷰 모델이 공통으로 사용할 메소드를 구현하는 객체
 final class PokemonManager: PokemonServiceProtocol {
     
-    func fetchPokemonData<T: Decodable>(urlType: URLManager, modelType: T.Type) -> Single<T> {
-        guard let url = URL(string: urlType.sendURL) else {
+    /// 네트워크 매니저를 사용해서 데이터를 디코딩하고 옵저버블로 반환해주는 메소드
+    /// - Parameters:
+    ///   - urlType: 디코딩할 URL
+    ///   - modelType: 디코딩할 데이터 모델 타입
+    /// - Returns: 디코딩된 데이터를 가진 옵저버블 타입
+    func fetchPokemonData<T: Decodable>(urlType: APIEndpoint, modelType: T.Type) -> Single<T> {
+        guard let url = URL(string: urlType.urlString) else {
             print(NetworkError.invalidURL.errorDescription)
             return Single.error(NetworkError.invalidURL)
         }
@@ -24,6 +31,9 @@ final class PokemonManager: PokemonServiceProtocol {
         return NetworkManager.shared.fetch(url: url)
     }
     
+    /// 포켓몬 데이터 리스트를 포켓몬의 디테일 데이터 리스트로 변환해주는 메소드
+    /// - Parameter datas: 포켓몬 데이터 리스트
+    /// - Returns: 포켓몬의 디테일 데이터 리스트를 가진 옵저버블 타입
     func fetchPokemonDetails(_ datas: [PokemonData]) -> Single<[PokemonDetailDataModel]> {
         return Observable.from(datas)
             .flatMap { data -> Single<PokemonDetailDataModel> in
