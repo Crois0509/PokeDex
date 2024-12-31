@@ -39,6 +39,7 @@
 		AA9AA8612D237F8100EA7F09 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA8602D237F8100EA7F09 /* SearchViewController.swift */; };
 		AA9AA8632D237FA400EA7F09 /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA8622D237FA400EA7F09 /* SearchTableViewCell.swift */; };
 		AA9AA8652D237FAC00EA7F09 /* SearchTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA8642D237FAC00EA7F09 /* SearchTableView.swift */; };
+		AA9AA9072D23D89B00EA7F09 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA9062D23D89B00EA7F09 /* SearchViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,7 @@
 		AA9AA8602D237F8100EA7F09 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		AA9AA8622D237FA400EA7F09 /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		AA9AA8642D237FAC00EA7F09 /* SearchTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableView.swift; sourceTree = "<group>"; };
+		AA9AA9062D23D89B00EA7F09 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 				AA75C7272D1E7244009B2A9D /* PokemonServiceProtocol.swift */,
 				AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */,
 				AA9AA85B2D23759900EA7F09 /* TabBarViewModel.swift */,
+				AA9AA9062D23D89B00EA7F09 /* SearchViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				AA75C7052D1D1A9C009B2A9D /* SceneDelegate.swift in Sources */,
 				AA9AA6AD2D22B95F00EA7F09 /* MainTabBarCell.swift in Sources */,
 				AA75C72C2D1F9654009B2A9D /* DetailViewModel.swift in Sources */,
+				AA9AA9072D23D89B00EA7F09 /* SearchViewModel.swift in Sources */,
 				AA9AA85F2D237F7900EA7F09 /* SearchView.swift in Sources */,
 				AA9AA6AB2D22B95300EA7F09 /* MainTabBarController.swift in Sources */,
 				AA9AA85C2D23759900EA7F09 /* TabBarViewModel.swift in Sources */,
