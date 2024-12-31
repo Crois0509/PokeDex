@@ -7,11 +7,14 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class SearchView: UIView {
     
     private let searchBar = UITextField()
     private let searchResultsTableView = SearchTableView()
+    private let viewModel = SearchViewModel()
+    private let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,6 +35,8 @@ private extension SearchView {
         configure()
         setupSearchBar()
         setupLayout()
+        addAction()
+        bind()
     }
     
     func configure() {
@@ -51,6 +56,7 @@ private extension SearchView {
         self.searchBar.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 10))
         self.searchBar.leftViewMode = .always
         self.searchBar.clearButtonMode = .whileEditing
+        self.searchBar.autocapitalizationType = .none
     }
     
     func setupLayout() {
@@ -64,6 +70,35 @@ private extension SearchView {
             $0.top.equalTo(self.searchBar.snp.bottom).offset(20)
             $0.trailing.leading.bottom.equalToSuperview().inset(10)
         }
+    }
+    
+    func addAction() {
+        self.searchBar.addTarget(self, action: #selector(search), for: .editingChanged)
+    }
+    
+    @objc func search() {
+        guard let text = self.searchBar.text else { return }
+        
+        if text.count <= 0 {
+            self.searchResultsTableView.resetData()
+        } else {
+            self.viewModel.search(text: text)
+        }
+    }
+    
+    func bind() {
+        self.viewModel.searchPokemonList
+            .subscribe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, data in
+                
+                owner.searchResultsTableView.searchPokemonList = data
+                owner.searchResultsTableView.reloadData()
+                
+            }, onError: { error in
+                print(error)
+                
+            }).disposed(by: self.disposeBag)
     }
     
 }
