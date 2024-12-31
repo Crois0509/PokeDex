@@ -12,8 +12,11 @@ import RxSwift
 final class SearchView: UIView {
     
     private let searchBar = UITextField()
+    
     private let searchResultsTableView = SearchTableView()
-    private let viewModel = SearchViewModel()
+    
+    private let viewModel = SearchViewModel(pokemonManager: PokemonManager())
+    
     private let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
@@ -41,7 +44,9 @@ private extension SearchView {
     
     func configure() {
         self.backgroundColor = .clear
-        [self.searchBar, self.searchResultsTableView].forEach {
+        [self.searchBar,
+         self.searchResultsTableView
+        ].forEach {
             self.addSubview($0)
         }
     }
