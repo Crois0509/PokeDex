@@ -12,6 +12,8 @@ final class SearchTableView: UIView {
     
     private let tableView = UITableView()
     
+    var searchPokemonList: [(id: Int, name: String)] = []
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -22,6 +24,19 @@ final class SearchTableView: UIView {
         super.init(coder: coder)
         
         setupUI()
+    }
+    
+    func reloadData() {
+        self.searchPokemonList.sort(by: { $0.id < $1.id })
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    func resetData() {
+        self.searchPokemonList.removeAll()
+        self.tableView.reloadData()
     }
     
 }
@@ -65,7 +80,7 @@ extension SearchTableView: UITableViewDelegate {
 extension SearchTableView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return self.searchPokemonList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -75,7 +90,10 @@ extension SearchTableView: UITableViewDataSource {
         
         cell.selectionStyle = .none
         
-        cell.configLabel(id: 25, name: "Pikachu")
+        let id = self.searchPokemonList[indexPath.row].id
+        let name = self.searchPokemonList[indexPath.row].name
+        
+        cell.configLabel(id: id, name: name)
         
         return cell
     }
