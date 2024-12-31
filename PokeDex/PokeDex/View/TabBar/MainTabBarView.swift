@@ -14,8 +14,8 @@ enum TabBarItem: String, CaseIterable {
 }
 
 final class MainTabBarView: UIView {
-    
-    var didSelect: ((Int) -> Void)?
+        
+    let viewModel = TabBarViewModel()
     
     private lazy var tabBarView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
@@ -101,7 +101,7 @@ private extension MainTabBarView {
 
 extension MainTabBarView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        didSelect?(indexPath.item)
+        self.viewModel.changePageIndex(indexPath.item)
         moveEffectView(TabBarItem.allCases[indexPath.item])
     }
 }

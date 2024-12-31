@@ -7,10 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class MainTabBarController: UIViewController {
     
     private let mainTabBar = MainTabBarView()
+    private let disposeBag = DisposeBag()
     
     private let viewControllers: [UIViewController]
     private var currentVC: UIViewController?
@@ -19,8 +21,6 @@ final class MainTabBarController: UIViewController {
         self.viewControllers = viewControllers
         
         super.init(nibName: nil, bundle: nil)
-        
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -29,6 +29,8 @@ final class MainTabBarController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupUI()
     }
 }
 
@@ -38,7 +40,7 @@ private extension MainTabBarController {
         configure()
         setupLayout()
         displayViewController(0)
-        changeVC()
+        bind()
     }
     
     func configure() {
@@ -73,14 +75,16 @@ private extension MainTabBarController {
         self.currentVC = selectedVC
     }
     
-    func changeVC() {
-        self.mainTabBar.didSelect = { [weak self] index in
-            guard let self else { return }
-            
-            UIView.transition(with: view, duration: 0.3, options: .transitionCrossDissolve) {
-                self.displayViewController(index)
-            }
-        }
+    func bind() {
+        self.mainTabBar.viewModel.pageIndex
+            .withUnretained(self)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { owner, index in
+                
+                UIView.transition(with: owner.view, duration: 0.3, options: .transitionCrossDissolve) {
+                    owner.displayViewController(index)
+                }
+                
+            }).disposed(by: self.disposeBag)
     }
-    
 }

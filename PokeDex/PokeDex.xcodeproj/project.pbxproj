@@ -34,6 +34,7 @@
 		AA9AA6AF2D22B98D00EA7F09 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA6AE2D22B98D00EA7F09 /* MainTabBarView.swift */; };
 		AA9AA73E2D22C47300EA7F09 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA73D2D22C47300EA7F09 /* ViewController.swift */; };
 		AA9AA7402D22C7EF00EA7F09 /* SelectEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA73F2D22C7EF00EA7F09 /* SelectEffect.swift */; };
+		AA9AA85C2D23759900EA7F09 /* TabBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA85B2D23759900EA7F09 /* TabBarViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		AA9AA6AE2D22B98D00EA7F09 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
 		AA9AA73D2D22C47300EA7F09 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		AA9AA73F2D22C7EF00EA7F09 /* SelectEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectEffect.swift; sourceTree = "<group>"; };
+		AA9AA85B2D23759900EA7F09 /* TabBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 				AA75C71F2D1D6D95009B2A9D /* MainViewModel.swift */,
 				AA75C7272D1E7244009B2A9D /* PokemonServiceProtocol.swift */,
 				AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */,
+				AA9AA85B2D23759900EA7F09 /* TabBarViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				AA9AA6AD2D22B95F00EA7F09 /* MainTabBarCell.swift in Sources */,
 				AA75C72C2D1F9654009B2A9D /* DetailViewModel.swift in Sources */,
 				AA9AA6AB2D22B95300EA7F09 /* MainTabBarController.swift in Sources */,
+				AA9AA85C2D23759900EA7F09 /* TabBarViewModel.swift in Sources */,
 				AA75C7342D1FC75E009B2A9D /* PokemonTypeTranslator.swift in Sources */,
 				AA9AA6AF2D22B98D00EA7F09 /* MainTabBarView.swift in Sources */,
 				AA9AA7402D22C7EF00EA7F09 /* SelectEffect.swift in Sources */,
