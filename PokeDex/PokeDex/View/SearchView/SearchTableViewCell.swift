@@ -43,7 +43,9 @@ private extension SearchTableViewCell {
     
     func configure() {
         self.backgroundColor = .personalDark
-        self.layer.cornerRadius = 20
+        self.layer.cornerRadius = 15
+        self.layer.borderColor = UIColor.personal.cgColor
+        self.layer.borderWidth = 2.5
         [self.numberLabel, self.nameLabel].forEach {
             self.addSubview($0)
         }
@@ -63,12 +65,12 @@ private extension SearchTableViewCell {
     func setupLayout() {
         self.numberLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(10)
+            $0.leading.equalToSuperview().inset(20)
         }
         
         self.nameLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(10)
+            $0.trailing.equalToSuperview().inset(20)
         }
     }
 }

@@ -9,16 +9,10 @@ import UIKit
 import SnapKit
 
 final class ViewController: UIViewController {
-
-    private lazy var testVC: UIViewController = {
-        let vc = UIViewController()
-        vc.view.backgroundColor = .personal
-        return vc
-    }()
     
     private lazy var mainVC = MainTabBarController(viewControllers: [
         MainViewController(),
-        self.testVC
+        SearchViewController()
     ])
     
     override func viewDidLoad() {

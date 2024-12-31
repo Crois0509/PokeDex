@@ -42,24 +42,27 @@ private extension SearchView {
     }
     
     func setupSearchBar() {
+        self.searchBar.backgroundColor = .white
         self.searchBar.placeholder = "포켓몬의 도감 번호나 이름을 입력해 주세요!"
         self.searchBar.textColor = .black
         self.searchBar.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         self.searchBar.borderStyle = .none
         self.searchBar.layer.cornerRadius = 25
-        self.searchBar.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        self.searchBar.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 10))
+        self.searchBar.leftViewMode = .always
         self.searchBar.clearButtonMode = .whileEditing
     }
     
     func setupLayout() {
         self.searchBar.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
+            $0.top.equalToSuperview().offset(10)
+            $0.leading.trailing.equalToSuperview().inset(15)
             $0.height.equalTo(50)
         }
         
         self.searchResultsTableView.snp.makeConstraints {
             $0.top.equalTo(self.searchBar.snp.bottom).offset(20)
-            $0.trailing.leading.bottom.equalToSuperview()
+            $0.trailing.leading.bottom.equalToSuperview().inset(10)
         }
     }
     

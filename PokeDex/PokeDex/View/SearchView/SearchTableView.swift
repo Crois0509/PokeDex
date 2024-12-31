@@ -40,6 +40,11 @@ private extension SearchTableView {
     }
     
     func setupTableView() {
+        self.tableView.backgroundColor = .clear
+        self.tableView.rowHeight = 50
+        self.tableView.separatorStyle = .none
+        self.tableView.showsVerticalScrollIndicator = false
+        self.tableView.showsHorizontalScrollIndicator = false
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
@@ -68,9 +73,10 @@ extension SearchTableView: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        cell.selectionStyle = .none
+        
         cell.configLabel(id: 25, name: "Pikachu")
         
         return cell
     }
-    
 }
