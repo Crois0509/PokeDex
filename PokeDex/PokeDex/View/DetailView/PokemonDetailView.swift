@@ -8,6 +8,8 @@
 import UIKit
 import SnapKit
 import RxSwift
+import Kingfisher
+
 
 // 포켓몬 디테일 뷰
 final class PokemonDetailView: UIView {
@@ -21,13 +23,13 @@ final class PokemonDetailView: UIView {
     private let infoLabel = UILabel()
     
     // MARK: - PokemonDetailView Initializer
-    init(image: UIImage, model: DetailViewModel) {
+    init(id: Int, model: DetailViewModel) {
         self.viewModel = model
         super.init(frame: .zero)
         
         setupUI()
+        addImage(id: id)
         bind()
-        self.imageView.image = image
     }
     
     required init?(coder: NSCoder) {
@@ -160,6 +162,11 @@ private extension PokemonDetailView {
                 print(error)
                 
             }).disposed(by: self.disposeBag)
+    }
+    
+    func addImage(id: Int) {
+        guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return }
+        self.imageView.kf.setImage(with: url)
     }
 }
 

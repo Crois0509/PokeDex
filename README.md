@@ -113,7 +113,9 @@
 
 ## 🤔 기능별 고민사항
 
-### 1) URL 관리
+
+### 1) 🚨 URL 관리
+
 이번 과제에서 사용되는 URL은 2가지 이다. 하나는 포켓몬의 데이터를 불러오는 URL이고, 하나는 포켓몬의 이미지를 불러오는 URL이다.
 
 처음에는 별 생각없이 필요한 곳에 URL을 직접 `String` 타입으로 작성하여 사용했는데, 이렇게 하니 코드가 너무 길어지고 관리가 어렵다는 문제가 있었다.
@@ -167,7 +169,9 @@ var sendURL: String {
 URLManager.pokemonData(limit: limit, offset: offset).sendURL
 ```
 
-### 2) CompositionalLayout VS FlowLayout
+
+### 2) 🚨 CompositionalLayout VS FlowLayout
+
 메인 화면의 대부분을 차지하는 것은 `UICollectionView`이다. 때문에 이 뷰를 구현하고 나면 대부분의 UI 작업이 끝나는 것인데, 너무 간단히 끝내면 재미 없으니 이번에 새로 배운 `CompositionalLayout`을 사용해보자고 생각했다.
 
 그러나 막상 구현할 때가 되니, 3*n 형식의 배열을 가지는 컬렉션뷰를 `FlowLayout`으로 간단히 구현할 수 있는데 `CompositionalLayout`을 써서 구현하는 것이 의미가 있을까 싶었다.
@@ -179,7 +183,9 @@ URLManager.pokemonData(limit: limit, offset: offset).sendURL
 
 대신, 모든 기능을 완성하고도 시간이 남는다면 `CompositionalLayout`을 사용해서 리팩토링 해보자고 생각하였다.
 
-### 3) 클래스의 역할과 책임
+
+### 3) 🚨 클래스의 역할과 책임
+
 이번 과제의 필수 구현 항목 중 `NetworkManager`를 구현하는 항목이 있다.
 
 말 그래도 네트워크와 관련된 작업들을 담당하는 클래스인데, 이 클래스를 싱글톤 패턴으로 만들어 다른 클래스에서도 사용할 수 있도록 구현하였다.
@@ -224,7 +230,9 @@ final class NetworkManager {
 }
 ```
 
-### 4) 데이터 바인딩 추상화하기
+
+### 4) 🚨 데이터 바인딩 추상화하기
+
 MainViewModel에서는 RxSwift를 활용하여 데이터 바인딩을 위한 비즈니스 로직을 작성해야 했다.
 RxSwift는 아직 어려워서 일단 기능 구현을 목표로 열심히 코드를 작성했는데, 그 결과가 아래와 같다.
 
@@ -310,7 +318,9 @@ RxSwift 코드도 함께 사용하면 구독을 통한 기능의 확장성도 �
 
 앞으로는 이런 작업을 할 때 기록을 남겨가며 작업해야겠다고 생각했다. 
 
-### 5) 무한 스크롤 버그?
+
+### 5) 🚨 무한 스크롤 버그?
+
 이번 과제의 마지막 단계에서는 '무한 스크롤'을 구현해야 한다. 사실 이전에 무한 스크롤이 어떻게 구현되는 것인지 궁금해서 찾아보고 연습한 적이 있었기 때문에 구현은 어렵지 않으리라고 생각했다.
 
 우선, 무한 스크롤이 작동되는 지점을 설정해줘야 하는데, 컬렉션뷰의 델리게이트 메소드를 활용했다.
@@ -385,5 +395,133 @@ func dataFetched() {
 
 지금은 데이터를 한 번에 30개씩 불러오고 30개가 다 불러와지면 로딩이 끝나는 식으로 구현이 되어 있는데, 이것을 줄이면 더 빠른 작동도 가능할 것이다.
 잦은 새로고침과 빠른 로딩, 비교적 적은 새로고침과 느린 로딩 둘 중 어느 것이 UX에 더 적합한지는 어려운 문제 같다.
+
+### 6) 🚨 검색기능 버그
+챌린지 구현으로 포켓몬 검색 기능을 만들던 중 버그(?)를 발견했다. 검색바에 포켓몬의 정보를 입력하면 해당 포켓몬이 표시는 되지만, 도감 번호가 잘못 표시되는 문제가 있었다.
+
+예를 들어 피카츄의 도감 번호는 25여야 하는데, 검색 결과에서는 217로 나타나는 등 데이터가 제대로 정렬되어 있지 않는 문제가 있었다. 왜 이런 문제가 발생했는지 원인을 분석한 결과 검색 데이터의 기반이 된 `koreanNames` 라는 딕셔너리 구조가 원인임을 확인할 수 있었다.
+
+#### 버그 영상
+
+![1](https://github.com/user-attachments/assets/f6b87a1f-3c74-4984-89e1-4a87f8c95f11)
+
+나는 검색 데이터를 `koreanNames`를 이용하여 아래와 같이 구현하였다.
+```swift
+typealias Names = (String, String)
+
+private static let koreanNames: [String: String] = [ ... ]
+
+static let pokemonList: [(id: String, name: Names)] = {
+	var list = [(id: String, name: Names)]()
+
+	for (index, data) in koreanNames.enumerated() {
+		let names: Names = (data.key, data.value)
+		let item = (id: "\(index + 1)", name: names)
+		list.append(item)
+	}
+
+	return list
+}()
+```
+딕셔너리의 인덱스를 이용해서 도감 번호를 작성하였는데, 문제는 딕셔너리가 데이터의 순서를 보장하지 않기 때문에 이를 배열로 변환하는 과정에서 순서가 뒤섞이며 도감 번호와 이름 간의 매핑이 잘못되는 것이었다.
+
+이 문제를 해결하기 위해서 어떻게 해결할 수 있을지 고민을 하다가 API 통신을 이용하여 데이터 소스를 구현하기로 결정하였다.
+기존에는 `forEach`를 통해 `pokemonList`를 구현했지만, 이는 데이터 관리와 검색의 정확성을 유지하기 어려운 방식이었다. 이에 따라, 포켓몬 정보를 API를 통해 가져오는 방식으로 전환하여 정확성을 높일 수 있도록 변경했다.
+```swift
+private var pokemonList: [PokemonData] = [] // 모든 포켓몬에 대한 정보가 담긴 배열
+
+/// 모든 포켓몬의 정보를 불러오는 메소드
+func dataLoad() {
+	self.pokemonManager.fetchPokemonData(urlType: .pokemonList(limit: 1025, offset: 0), modelType: PokemonDataModel.self)
+		.observe(on: ConcurrentDispatchQueueScheduler(qos: .default))
+		.subscribe(onSuccess: { [weak self] data in
+			guard let self else { return }
+                
+			self.pokemonList = data.results
+                
+		}, onFailure: { error in
+        
+			print(error)
+                
+		}).disposed(by: self.disposeBag)      
+}
+```
+이 메소드는 API를 통해 1025개의 포켓몬 데이터를 정렬된 상태로 제공하여 정확한 도감 번호를 보장할 수 있다. 실제로 데이터가 잘 정렬이 되어 들어오는지 확인해보기 위해 브레이크 포인트를 걸고 확인한 결과 도감 순서대로 데이터가 들어오는 것을 확인할 수 있었다.
+
+![스크린샷 2025-01-02 19 31 43](https://github.com/user-attachments/assets/22c97b25-df30-485f-84e1-bbf9fbb3a91b)
+
+데이터 소스를 변경한 이후 검색 로직도 전면적으로 재구성 할 필요가 있었다.
+검색창에 입력된 텍스트를 기반으로 포켓몬 이름과 도감 번호를 정확히 필터링할 수 있도록 로직을 설계했으며, 이 과정에서 API를 통해 가져온 데이터를 `PokemonData` 배열 형태로 정리했다. 이 배열에서 각 포켓몬의 이름(name)을 추출하고, 배열의 인덱스를 활용해 도감 번호(id)를 정확히 부여하는 방식으로 구현하였다.
+
+또, 도감 번호, 영어 이름, 한국어 이름을 모두 대응할 수 있도록 메소드를 구현하여 기능을 확장하였다.
+```swift
+/// 검색한 값과 관련있는 포켓몬 데이터를 이벤트로 방출하는 메소드
+/// - Parameter text: 검색창 입력 값
+func search(text: String) {
+	let list = containsSearchResult(text: text)
+        
+	guard list.count > 0 else { return }
+        
+	self.searchPokemonList.onNext(list)
+}
+
+/// 입력된 값과 연관된 포켓몬 리스트를 반환하는 메소드
+/// - Parameter text: 입력 값
+/// - Returns: 포켓몬 ID, Name 배열
+func containsSearchResult(text: String) -> [(Int, String)] {
+	var searchList: [(Int, String)] = []
+        
+	let list = self.pokemonList.enumerated().filter { index, data in
+		PokemonTranslator.getKoreanName(for: data.name).contains(text) ||
+		data.name.contains(text.lowercased()) ||
+		(index + 1).contains(Int(text) ?? -1)
+	}.map {
+		($0.offset, $0.element)
+	}
+        
+	searchList += addData(datas: list)
+        
+	return searchList
+}
+    
+/// 포켓몬 데이터 배열을 ID, Name 배열로 반환하는 메소드
+/// - Parameter datas: 포켓몬 ID와 포켓몬 데이터가 포함된 배열
+/// - Returns: 포켓몬 ID와 포켓몬 이름을 담은 튜플 배열
+func addData(datas: [(Int, PokemonData)]) -> [(id: Int, name: String)] {
+	var result: [(Int, String)] = []
+        
+	datas.forEach { index, data in
+		let id = index + 1
+		let name = PokemonTranslator.getKoreanName(for: data.name)
+		let item = (id, name)
+		result.append(item)
+	}
+        
+	return result
+}
+
+// MARK: - Int Extension Method
+extension Int {
+    /// Int 타입끼리의 contains 메소드
+    /// - Parameter digit: 비교할 값
+    /// - Returns: digit이 self에 포함된 경우 true, 그렇지 않은 경우 false
+    func contains(_ digit: Int) -> Bool {
+        let number = String(self)
+        let digitNumber = String(digit)
+        
+        return number.contains(digitNumber)
+    }
+}
+```
+
+여기서 가공된 `[(id: Int, name: String)]` 타입의 배열을 RxSwift를 활용하여 테이블뷰와 바인딩 하였고, 값이 업데이트 되면 그 결과가 즉시 반영될 수 있도록 구현했다.
+
+이렇게 구현된 최종 검색 기능은 사용자가 도감 번호, 한국어 이름, 영어 이름 중 어떤 것을 입력하더라도 정확한 포켓몬 정보를 보여줄 수 있게 되었다. API를 이용하여 검색 데이터를 구현했기 때문에 도감 번호 오류가 완전히 해결되었으며, 검색 기능의 안정성과 정확성이 크게 향상되었다.
+
+다만 이를 구현하기 위해 고차함수를 많이 사용했는데... 이 탓에 시간 복잡도가 증가하는 문제가 있는 점이 신경 쓰인다.
+어떤 코드가 더 좋은 코드일까? 실제로 검색바를 구현하는 방법들을 보고 비교해보며 더 나은 코드를 작성할 수 있도록 노력해 보아야겠다고 생각했다.
+
+#### 구현 결과
+![2](https://github.com/user-attachments/assets/d3784a6f-f3d5-4b5e-984f-a6a4661a1b9a)
 
 
