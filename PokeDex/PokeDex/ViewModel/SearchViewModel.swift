@@ -54,6 +54,11 @@ final class SearchViewModel {
         
     }
     
+    func addImage(id: Int) -> UIImage {
+        guard let image = NetworkManager.shared.fetchImage(id: id) else { return UIImage() }
+        return image
+    }
+    
     func search(text: String) {
         if let result = Int(text) {
             var searchList: [(Int, String)] = []

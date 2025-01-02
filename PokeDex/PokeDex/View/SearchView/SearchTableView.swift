@@ -14,6 +14,8 @@ final class SearchTableView: UIView {
     
     var searchPokemonList: [(id: Int, name: String)] = []
     
+    var selectedCell: ((Int) -> Void)?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -74,7 +76,10 @@ private extension SearchTableView {
 }
 
 extension SearchTableView: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let data = self.searchPokemonList[indexPath.row]
+        self.selectedCell?(data.id)
+    }
 }
 
 extension SearchTableView: UITableViewDataSource {

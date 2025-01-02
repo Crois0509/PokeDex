@@ -40,6 +40,7 @@ private extension SearchView {
         setupLayout()
         addAction()
         bind()
+        setupClosure()
     }
     
     func configure() {
@@ -104,6 +105,22 @@ private extension SearchView {
                 print(error)
                 
             }).disposed(by: self.disposeBag)
+    }
+    
+    func setupClosure() {
+        DispatchQueue.main.async {
+            self.searchResultsTableView.selectedCell = {
+                let image = self.viewModel.addImage(id: $0)
+                
+                let detailView = PokemonDetailView(
+                    image: image,
+                    model: DetailViewModel(pokemonManager: PokemonManager(), id: $0)
+                )
+                
+                guard let view = self.window?.rootViewController as? UINavigationController else { return }
+                view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+            }
+        }
     }
     
 }
