@@ -142,7 +142,7 @@ extension PokemonCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailView = PokemonDetailView(
-            image: UIImage(),
+            id: indexPath.item + 1,
             model: DetailViewModel(pokemonManager: PokemonManager(), id: indexPath.item + 1)
         )
         

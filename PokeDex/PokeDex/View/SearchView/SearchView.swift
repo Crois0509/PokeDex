@@ -109,12 +109,12 @@ private extension SearchView {
     
     func setupClosure() {
         DispatchQueue.main.async {
-            self.searchResultsTableView.selectedCell = {
-                let image = UIImage()
+            self.searchResultsTableView.selectedCell = { [weak self] id in
+                guard let self else { return }
                 
                 let detailView = PokemonDetailView(
-                    image: image,
-                    model: DetailViewModel(pokemonManager: PokemonManager(), id: $0)
+                    id: id,
+                    model: DetailViewModel(pokemonManager: PokemonManager(), id: id)
                 )
                 
                 guard let view = self.window?.rootViewController as? UINavigationController else { return }
