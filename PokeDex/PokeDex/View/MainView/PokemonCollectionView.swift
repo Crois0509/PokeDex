@@ -18,7 +18,7 @@ final class PokemonCollectionView: UIView {
     
     private var didFeched: Bool = true // 현재 데이터를 불러오는 중인지 확인
     
-    private var pokemonImageList: [(image: UIImage,id: Int)] = []
+    private var pokemonList: [PokemonData] = []
     
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
@@ -113,20 +113,21 @@ private extension PokemonCollectionView {
     
     /// 데이터 바인딩 메소드
     func bind() {
-        self.viewModel.pokemonImages
+        self.viewModel.pokemonList
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { owner, data in
                 
-                owner.pokemonImageList += data
-                owner.pokemonImageList.sort(by: { $0.id < $1.id })
+                owner.pokemonList += data
                 
                 owner.collectionView.reloadData()
                 owner.didFeched = false
                 owner.dataFetched()
                 
-            }, onError: { error in
+            }, onError: { [weak self] error in
                 print("Error: \(error)")
+                self?.didFeched = false
+                self?.dataFetched()
                 
             }).disposed(by: self.disposeBag)
     }
@@ -141,7 +142,7 @@ extension PokemonCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailView = PokemonDetailView(
-            image: self.pokemonImageList[indexPath.item].image,
+            image: UIImage(),
             model: DetailViewModel(pokemonManager: PokemonManager(), id: indexPath.item + 1)
         )
         
@@ -171,7 +172,7 @@ extension PokemonCollectionView: UICollectionViewDataSource {
     
     // 컬렉션뷰 아이템 수를 설정하는 메소드
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.pokemonImageList.count
+        return self.pokemonList.count
     }
     
     // 컬렉션뷰의 아이템을 설정하는 메소드
@@ -180,7 +181,7 @@ extension PokemonCollectionView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.addImage(self.pokemonImageList[indexPath.item].image)
+        cell.addImage(indexPath.item + 1)
         
         return cell
     }

@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 // 메인뷰의 컬렉션뷰 커스텀 셀
 final class PokemonCell: UICollectionViewCell {
@@ -34,8 +35,9 @@ final class PokemonCell: UICollectionViewCell {
         self.imageView.image = nil
     }
     
-    func addImage(_ image: UIImage?) {
-        self.imageView.image = image
+    func addImage(_ id: Int) {
+        guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return }
+        self.imageView.kf.setImage(with: url)
     }
 }
  

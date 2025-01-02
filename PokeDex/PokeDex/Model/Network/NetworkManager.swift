@@ -51,27 +51,27 @@ final class NetworkManager {
         }
     }
     
-    /// API 통신을 통해 포켓몬 이미지를 가져오는 메소드
-    /// - Parameter id:포켓몬의 도감 번호
-    /// - Returns: 포켓몬 이미지
-    func fetchImage(id: Int) -> UIImage? {
-        var resultImage: UIImage?
-        guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return nil }
-        
-        DispatchQueue.global().sync {
-            guard let imageData = try? Data(contentsOf: url) else {
-                resultImage = nil
-                return
-            }
-            
-            guard let image = UIImage(data: imageData) else {
-                resultImage = nil
-                return
-            }
-            
-            resultImage = image
-        }
-        
-        return resultImage
-    }
+//    /// API 통신을 통해 포켓몬 이미지를 가져오는 메소드
+//    /// - Parameter id:포켓몬의 도감 번호
+//    /// - Returns: 포켓몬 이미지
+//    func fetchImage(id: Int) -> UIImage? {
+//        var resultImage: UIImage?
+//        guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return nil }
+//        
+//        DispatchQueue.global().sync {
+//            guard let imageData = try? Data(contentsOf: url) else {
+//                resultImage = nil
+//                return
+//            }
+//            
+//            guard let image = UIImage(data: imageData) else {
+//                resultImage = nil
+//                return
+//            }
+//            
+//            resultImage = image
+//        }
+//        
+//        return resultImage
+//    }
 }

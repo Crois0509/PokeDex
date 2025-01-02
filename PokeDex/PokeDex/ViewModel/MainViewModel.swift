@@ -18,7 +18,7 @@ final class MainViewModel {
     
     let disposeBag = DisposeBag()
     
-    let pokemonImages = BehaviorSubject(value: [(image: UIImage,id: Int)]()) // 데이터 바인딩 객체
+    let pokemonList = PublishSubject<[PokemonData]>() // 데이터 바인딩 객체
     
     // MARK: - MainViewModel Initializer
     
@@ -47,54 +47,15 @@ private extension MainViewModel {
             modelType: PokemonDataModel.self
         )
         .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
-        .flatMap { [weak self] in
-            guard let self else {
-                return Single.error(NetworkError.dataFetchFail)
-            }
-            self.nextURL = $0.next
-            return self.pokemonManager.fetchPokemonDetails($0.results)
-        }
-        .subscribe(onSuccess: { [weak self] (details: [PokemonDetailDataModel]) in
+        .subscribe(onSuccess: { [weak self] data in
             guard let self else { return }
             
-            self.fetchPokemonImage(details: details, self.pokemonImages)
+            self.nextURL = data.next
+            self.pokemonList.onNext(data.results)
             
         }, onFailure: { [weak self] error in
-            self?.pokemonImages.onError(error)
+            self?.pokemonList.onError(error)
             
         }).disposed(by: self.disposeBag)
-    }
-    
-    /// 포켓몬의 이미지를 불러오는 메소드
-    /// - Parameters:
-    ///   - details: 포켓몬 디테일 데이터 타입
-    ///   - subject: 불러온 데이터를 이벤트로 전달 받을 옵저버블 타입
-    func fetchPokemonImage(details: [PokemonDetailDataModel], _ subject: BehaviorSubject<[(image: UIImage,id: Int)]>) {
-        var pokemonImages: [(image: UIImage, id: Int)] = []
-        
-        var uniqueDetails = details.filter { !self.existentPokemons.contains($0.id) }
-        uniqueDetails.forEach { self.existentPokemons.insert($0.id) }
-        uniqueDetails.sort(by: { $0.id < $1.id })
-        
-        Observable.from(uniqueDetails)
-            .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
-            .map { data -> (UIImage, Int) in
-                guard let image = NetworkManager.shared.fetchImage(id: data.id) else {
-                    subject.onError(NetworkError.dataFetchFail)
-                    return (UIImage(), 0)
-                }
-                return (image, data.id)
-            }
-            .subscribe(onNext: { data in
-                
-                pokemonImages.append(data)
-                
-            }, onError: { error in
-                subject.onError(error)
-                
-            }, onCompleted: {
-                subject.onNext(pokemonImages)
-                
-            }).disposed(by: self.disposeBag)
     }
 }

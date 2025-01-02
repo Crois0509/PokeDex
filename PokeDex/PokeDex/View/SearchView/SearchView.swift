@@ -110,7 +110,7 @@ private extension SearchView {
     func setupClosure() {
         DispatchQueue.main.async {
             self.searchResultsTableView.selectedCell = {
-                let image = self.viewModel.addImage(id: $0)
+                let image = UIImage()
                 
                 let detailView = PokemonDetailView(
                     image: image,
