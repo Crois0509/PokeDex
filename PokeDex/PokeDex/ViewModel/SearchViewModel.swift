@@ -15,7 +15,7 @@ final class SearchViewModel {
     
     private let disposeBag = DisposeBag()
     
-    private var pokemonList: [PokemonDetailDataModel] = []
+    private var pokemonList: [PokemonData] = []
         
     let searchPokemonList = PublishSubject<[(Int, String)]>()
     
@@ -25,18 +25,12 @@ final class SearchViewModel {
     }
     
     private func dataLoad() {
-        self.pokemonManager.fetchPokemonData(urlType: .pokemonList(limit: 25, offset: 0), modelType: PokemonDataModel.self)
+        self.pokemonManager.fetchPokemonData(urlType: .pokemonList(limit: 1025, offset: 0), modelType: PokemonDataModel.self)
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .default))
-            .flatMap { [weak self] in
-                guard let self else {
-                    return Single.error(NetworkError.dataFetchFail)
-                }
-                return self.pokemonManager.fetchPokemonDetails($0.results)
-            }
-            .subscribe(onSuccess: { [weak self] (details: [PokemonDetailDataModel]) in
+            .subscribe(onSuccess: { [weak self] data in
                 guard let self else { return }
                 
-                self.pokemonList = details
+                self.pokemonList = data.results
                 
             }, onFailure: { error in
                 print(error)
@@ -45,42 +39,52 @@ final class SearchViewModel {
         
     }
     
-//    func addImage(id: Int) -> UIImage {
-//        guard let image = NetworkManager.shared.fetchImage(id: id) else { return UIImage() }
-//        return image
-//    }
-    
     func search(text: String) {
         if let result = Int(text) {
             var searchList: [(Int, String)] = []
             
-            let list = self.pokemonList.filter { $0.id.contains(result) }
+            let list = self.pokemonList.enumerated().filter { index, _ in
+                (index + 1).contains(result)
+            }.map {
+                ($0.offset, $0.element)
+            }
+            
             guard list.count > 0 else { return }
             
-            searchList += addData(data: list)
+            searchList += addData(datas: list)
             
             self.searchPokemonList.onNext(searchList)
             
         } else {
             var searchList: [(Int, String)] = []
             
-            let enList = self.pokemonList.filter { $0.name.contains(text.lowercased()) }
-            let koList = self.pokemonList.filter { PokemonTranslator.getKoreanName(for: $0.name).contains(text) }
+            let enList = self.pokemonList.enumerated().filter { index, data in
+                data.name.contains(text.lowercased())
+            }.map {
+                ($0.offset, $0.element)
+            }
+            
+            let koList = self.pokemonList.enumerated().filter { index, data in
+                PokemonTranslator.getKoreanName(for: data.name).contains(text)
+            }.map {
+                ($0.offset, $0.element)
+            }
+            
             guard enList.count > 0 || koList.count > 0 else { return }
             
-            searchList += addData(data: enList)
-            searchList += addData(data: koList)
-            
+            searchList += addData(datas: enList)
+            searchList += addData(datas: koList)
+         
             self.searchPokemonList.onNext(searchList)
         }
     }
     
-    private func addData(data: [PokemonDetailDataModel]) -> [(id: Int, name: String)] {
+    private func addData(datas: [(Int, PokemonData)]) -> [(id: Int, name: String)] {
         var result: [(Int, String)] = []
         
-        data.forEach {
-            let id = $0.id
-            let name = PokemonTranslator.getKoreanName(for: $0.name)
+        datas.forEach { index, data in
+            let id = index + 1
+            let name = PokemonTranslator.getKoreanName(for: data.name)
             let item = (id, name)
             result.append(item)
         }

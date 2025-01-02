@@ -94,8 +94,8 @@ private extension SearchView {
     
     func bind() {
         self.viewModel.searchPokemonList
-            .subscribe(on: MainScheduler.instance)
             .withUnretained(self)
+            .subscribe(on: MainScheduler.instance)
             .subscribe(onNext: { owner, data in
                 
                 owner.searchResultsTableView.searchPokemonList = data
