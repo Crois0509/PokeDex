@@ -158,9 +158,9 @@ private extension SearchView {
     func bindTableViewSelect() {
         self.searchResultsTableView.tableView.rx.itemSelected
             .withUnretained(self)
-            .subscribe(onNext: { owner, data in
+            .subscribe(onNext: { owner, indexPath in
                 
-                let id = owner.searchResultsTableView.searchPokemonList[data.row].id
+                let id = owner.searchResultsTableView.searchPokemonList[indexPath.row].id
                 owner.presentDetailView(id: id)
                 
             }, onError: { error in
