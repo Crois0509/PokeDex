@@ -17,11 +17,7 @@ final class MainViewModel {
     private var offset: Int = 0 // 몇 번째 포켓몬부터 불러올 것인지 선택
     
     private let pokemons: Int = 1025 // 최대 포켓몬 수
-    
-    private var existentPokemons: Set<Int> = [] // 가져온 데이터의 중복 방지를 위한 데이터 타입
-    
-    private var nextURL: String = "" // 다음 데이터 리스트의 API 링크를 담을 프로퍼티
-    
+            
     let disposeBag = DisposeBag()
     
     let pokemonList = PublishSubject<[PokemonData]>() // 데이터 바인딩 객체
