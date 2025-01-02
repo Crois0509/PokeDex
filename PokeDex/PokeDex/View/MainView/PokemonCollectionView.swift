@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RxSwift
+import RxCocoa
 
 // 포켓몬 도감 리스트를 보여주는 뷰
 final class PokemonCollectionView: UIView {
@@ -18,11 +19,10 @@ final class PokemonCollectionView: UIView {
     
     private var didFeched: Bool = true // 현재 데이터를 불러오는 중인지 확인
     
-    private var pokemonImageList: [(image: UIImage,id: Int)] = []
+    private var pokemonList: [PokemonData] = []
     
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-        cv.delegate = self
         cv.dataSource = self
         cv.backgroundColor = .clear
         cv.showsVerticalScrollIndicator = false
@@ -75,7 +75,6 @@ private extension PokemonCollectionView {
     func configure() {
         self.backgroundColor = UIColor.personalDark
         [self.collectionView,
-//         self.blockingView,
          self.activityIndicator].forEach { self.addSubview($0) }
     }
     
@@ -113,57 +112,80 @@ private extension PokemonCollectionView {
     
     /// 데이터 바인딩 메소드
     func bind() {
-        self.viewModel.pokemonImages
+        bindPokemonList()
+        bindSelectCell()
+        bindDidScroll()
+    }
+    
+    /// 포켓몬 리스트를 바인딩하는 메소드
+    func bindPokemonList() {
+        self.viewModel.pokemonList
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { owner, data in
                 
-                owner.pokemonImageList += data
-                owner.pokemonImageList.sort(by: { $0.id < $1.id })
+                owner.pokemonList += data
                 
                 owner.collectionView.reloadData()
                 owner.didFeched = false
                 owner.dataFetched()
                 
-            }, onError: { error in
+            }, onError: { [weak self] error in
                 print("Error: \(error)")
+                self?.didFeched = false
+                self?.dataFetched()
                 
             }).disposed(by: self.disposeBag)
     }
     
-}
-
-// MARK: - PokemonCollectionView CollectionView Delegate Method
-extension PokemonCollectionView: UICollectionViewDelegate {
-    
-    // 셀이 선택되었을 때 액션 구현
-    // 선택된 셀의 포켓몬 정보를 확인할 수 있도록 네비게이션 구현
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let detailView = PokemonDetailView(
-            image: self.pokemonImageList[indexPath.item].image,
-            model: DetailViewModel(pokemonManager: PokemonManager(), id: indexPath.item + 1)
-        )
-        
-        guard let view = self.window?.rootViewController as? UINavigationController else { return }
-        view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+    /// 컬렉션뷰의 아이템 선택에 대해 바인딩하는 메소드
+    func bindSelectCell() {
+        self.collectionView.rx.itemSelected
+            .withUnretained(self)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { owner, indexPath in
+                
+                let detailView = PokemonDetailView(
+                    id: indexPath.item + 1,
+                    model: DetailViewModel(pokemonManager: PokemonManager(), id: indexPath.item + 1)
+                )
+                
+                guard let view = owner.window?.rootViewController as? UINavigationController else { return }
+                view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+                
+            }, onError: { error in
+                
+                print(error)
+                
+            }).disposed(by: self.disposeBag)
     }
     
-    // 스크롤이 진행 중일 때 액션
-    // 현재 스크롤 위치를 확인하여 스크롤이 최하단에 있는 경우 데이터를 더 불러온다.
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let currentOffset = scrollView.contentOffset.y
-        let visibleHeight = scrollView.contentSize.height
-        let totalHeight = scrollView.frame.height
-        let threshold = visibleHeight - totalHeight
-        
-        if currentOffset >= threshold && !self.didFeched {
-            self.viewModel.reload()
-            self.didFeched = true
-            self.dataFetched()
-            self.layoutIfNeeded()
-        }
+    /// 컬렉션뷰의 스크롤에 대해 바인딩하는 메소드
+    func bindDidScroll() {
+        self.collectionView.rx.didScroll
+            .withUnretained(self)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { owner, scrollView in
+                
+                let currentOffset = owner.collectionView.contentOffset.y
+                let visibleHeight = owner.collectionView.contentSize.height
+                let totalHeight = owner.frame.height
+                let threshold = visibleHeight - totalHeight + 100
+                
+                if currentOffset > threshold && !owner.didFeched {
+                    guard self.viewModel.getCurrentOffset() else { return }
+                    owner.viewModel.reload()
+                    owner.didFeched = true
+                    owner.dataFetched()
+                }
+                
+            }, onError: { error in
+                
+                print(error)
+                
+            }).disposed(by: self.disposeBag)
     }
+    
 }
 
 // MARK: - PokemonCollectionView CollectionView DataSource Method
@@ -171,7 +193,7 @@ extension PokemonCollectionView: UICollectionViewDataSource {
     
     // 컬렉션뷰 아이템 수를 설정하는 메소드
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.pokemonImageList.count
+        return self.pokemonList.count
     }
     
     // 컬렉션뷰의 아이템을 설정하는 메소드
@@ -180,7 +202,7 @@ extension PokemonCollectionView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.addImage(self.pokemonImageList[indexPath.item].image)
+        cell.addImage(indexPath.item + 1)
         
         return cell
     }

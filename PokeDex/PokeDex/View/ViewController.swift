@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+// 루트 뷰
 final class ViewController: UIViewController {
     
     private lazy var mainVC = MainTabBarController(viewControllers: [
@@ -15,6 +16,7 @@ final class ViewController: UIViewController {
         SearchViewController()
     ])
     
+    // MARK: - ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
