@@ -88,6 +88,7 @@ private extension SearchView {
         if text.count <= 0 {
             self.searchResultsTableView.resetData()
         } else {
+            self.searchResultsTableView.resetData()
             self.viewModel.search(text: text)
         }
     }
