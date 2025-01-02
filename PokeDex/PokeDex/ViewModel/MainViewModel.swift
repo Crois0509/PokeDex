@@ -11,8 +11,9 @@ import RxSwift
 // 메인 뷰의 로직을 담당하는 모델
 final class MainViewModel {
     private let pokemonManager: PokemonServiceProtocol // 데이터 패치를 담당하는 인스턴스
-    private var limit: Int = 30
+    private var limit: Int = 25
     private var offset: Int = 0
+    private let pokemons: Int = 1025
     private var existentPokemons: Set<Int> = [] // 가져온 데이터의 중복 방지를 위한 데이터 타입
     private var nextURL: String = "" // 다음 데이터 리스트의 API 링크를 담을 프로퍼티
     
@@ -33,7 +34,11 @@ final class MainViewModel {
     
     /// 스크롤을 모두 완료하면 새로운 데이터 리스트를 불러오는 메소드
     func reload() {
-        fetchPokemonData(urlType: .customURL(url: self.nextURL))
+        fetchPokemonData(urlType: .pokemonList(limit: self.limit, offset: self.offset))
+    }
+    
+    func getCurrentOffset() -> Bool {
+        return self.offset <= self.pokemons
     }
 }
 
@@ -50,8 +55,8 @@ private extension MainViewModel {
         .subscribe(onSuccess: { [weak self] data in
             guard let self else { return }
             
-            self.nextURL = data.next
             self.pokemonList.onNext(data.results)
+            self.offset += self.limit
             
         }, onFailure: { [weak self] error in
             self?.pokemonList.onError(error)

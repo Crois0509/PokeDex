@@ -159,10 +159,10 @@ extension PokemonCollectionView: UICollectionViewDelegate {
         let threshold = visibleHeight - totalHeight
         
         if currentOffset >= threshold && !self.didFeched {
+            guard self.viewModel.getCurrentOffset() else { return }
             self.viewModel.reload()
             self.didFeched = true
             self.dataFetched()
-            self.layoutIfNeeded()
         }
     }
 }
