@@ -35,6 +35,8 @@ final class PokemonCell: UICollectionViewCell {
         self.imageView.image = nil
     }
     
+    /// 셀의 이미지를 세팅하는 메소드
+    /// - Parameter id: 포켓몬의 ID
     func addImage(_ id: Int) {
         guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return }
         self.imageView.kf.setImage(with: url)

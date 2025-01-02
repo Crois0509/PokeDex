@@ -8,27 +8,36 @@
 import UIKit
 import SnapKit
 
+// 검색뷰 컨트롤러
 final class SearchViewController: UIViewController {
     
-    private let searchView = PokeDexView(view: SearchView())
+    private let searchView = PokeDexView(view: SearchView()) // 검색 화면
     
+    // MARK: - SearchViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
     }
+}
+
+// MARK: - SearchViewController UI Setting Method
+private extension SearchViewController {
     
-    private func setupUI() {
+    /// 모든 UI를 세팅하는 메소드
+    func setupUI() {
         configure()
         setupLayout()
     }
     
-    private func configure() {
+    /// self에 대한 설정을 하는 메소드
+    func configure() {
         self.view.backgroundColor = .personal
         self.view.addSubview(self.searchView)
     }
     
-    private func setupLayout() {
+    /// 모든 레이아웃을 설정하는 메소드
+    func setupLayout() {
         self.searchView.snp.makeConstraints {
             $0.edges.equalTo(self.view.safeAreaLayoutGuide)
         }

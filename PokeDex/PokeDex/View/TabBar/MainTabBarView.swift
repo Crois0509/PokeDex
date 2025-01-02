@@ -44,7 +44,7 @@ final class MainTabBarView: UIView {
         return layout
     }()
     
-    private let effectView = SelectEffect() // 애니메이션 인디케이터
+    private let effectView = TabBarIndicator() // 애니메이션 인디케이터
     
     // MARK: - MainTabBarView Initializer
     override init(frame: CGRect) {
