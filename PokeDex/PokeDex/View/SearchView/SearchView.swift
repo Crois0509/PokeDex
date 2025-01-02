@@ -15,6 +15,8 @@ final class SearchView: UIView {
     
     private let searchResultsTableView = SearchTableView()
     
+    private let resultLabel = UILabel()
+    
     private let viewModel = SearchViewModel(pokemonManager: PokemonManager())
     
     private let disposeBag = DisposeBag()
@@ -37,16 +39,19 @@ private extension SearchView {
     func setupUI() {
         configure()
         setupSearchBar()
+        setupResultLabel()
         setupLayout()
         addAction()
         bind()
         setupClosure()
+        changeSearchResult()
     }
     
     func configure() {
         self.backgroundColor = .clear
         [self.searchBar,
-         self.searchResultsTableView
+         self.searchResultsTableView,
+         self.resultLabel
         ].forEach {
             self.addSubview($0)
         }
@@ -65,6 +70,23 @@ private extension SearchView {
         self.searchBar.autocapitalizationType = .none
     }
     
+    func setupResultLabel() {
+        self.resultLabel.text = "검색 결과가 없습니다"
+        self.resultLabel.textColor = .personalDark
+        self.resultLabel.numberOfLines = 1
+        self.resultLabel.textAlignment = .center
+        self.resultLabel.font = UIFont.boldSystemFont(ofSize: 30)
+    }
+    
+    func changeSearchResult() {
+        switch self.searchResultsTableView.searchPokemonList.isEmpty {
+        case true:
+            self.resultLabel.isHidden = false
+        case false:
+            self.resultLabel.isHidden = true
+        }
+    }
+    
     func setupLayout() {
         self.searchBar.snp.makeConstraints {
             $0.top.equalToSuperview().offset(10)
@@ -75,6 +97,10 @@ private extension SearchView {
         self.searchResultsTableView.snp.makeConstraints {
             $0.top.equalTo(self.searchBar.snp.bottom).offset(20)
             $0.trailing.leading.bottom.equalToSuperview().inset(10)
+        }
+        
+        self.resultLabel.snp.makeConstraints {
+            $0.center.equalToSuperview()
         }
     }
     
@@ -87,9 +113,11 @@ private extension SearchView {
         
         if text.count <= 0 {
             self.searchResultsTableView.resetData()
+            changeSearchResult()
         } else {
             self.searchResultsTableView.resetData()
             self.viewModel.search(text: text)
+            changeSearchResult()
         }
     }
     
