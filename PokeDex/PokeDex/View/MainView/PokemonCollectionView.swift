@@ -10,6 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+
 // 포켓몬 도감 리스트를 보여주는 뷰
 final class PokemonCollectionView: UIView {
     
@@ -129,8 +130,9 @@ private extension PokemonCollectionView {
                 owner.collectionView.reloadData()
                 owner.didFeched = false
                 owner.dataFetched()
-                
+
             }, onError: { [weak self] error in
+                         
                 print("Error: \(error)")
                 self?.didFeched = false
                 self?.dataFetched()
@@ -185,7 +187,6 @@ private extension PokemonCollectionView {
                 
             }).disposed(by: self.disposeBag)
     }
-    
 }
 
 // MARK: - PokemonCollectionView CollectionView DataSource Method
@@ -201,7 +202,7 @@ extension PokemonCollectionView: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.id, for: indexPath) as? PokemonCell else {
             return UICollectionViewCell()
         }
-        
+
         cell.addImage(indexPath.item + 1)
         
         return cell

@@ -113,7 +113,9 @@
 
 ## 🤔 기능별 고민사항
 
+
 ### 1) 🚨 URL 관리
+
 이번 과제에서 사용되는 URL은 2가지 이다. 하나는 포켓몬의 데이터를 불러오는 URL이고, 하나는 포켓몬의 이미지를 불러오는 URL이다.
 
 처음에는 별 생각없이 필요한 곳에 URL을 직접 `String` 타입으로 작성하여 사용했는데, 이렇게 하니 코드가 너무 길어지고 관리가 어렵다는 문제가 있었다.
@@ -167,7 +169,9 @@ var sendURL: String {
 URLManager.pokemonData(limit: limit, offset: offset).sendURL
 ```
 
+
 ### 2) 🚨 CompositionalLayout VS FlowLayout
+
 메인 화면의 대부분을 차지하는 것은 `UICollectionView`이다. 때문에 이 뷰를 구현하고 나면 대부분의 UI 작업이 끝나는 것인데, 너무 간단히 끝내면 재미 없으니 이번에 새로 배운 `CompositionalLayout`을 사용해보자고 생각했다.
 
 그러나 막상 구현할 때가 되니, 3*n 형식의 배열을 가지는 컬렉션뷰를 `FlowLayout`으로 간단히 구현할 수 있는데 `CompositionalLayout`을 써서 구현하는 것이 의미가 있을까 싶었다.
@@ -179,7 +183,9 @@ URLManager.pokemonData(limit: limit, offset: offset).sendURL
 
 대신, 모든 기능을 완성하고도 시간이 남는다면 `CompositionalLayout`을 사용해서 리팩토링 해보자고 생각하였다.
 
+
 ### 3) 🚨 클래스의 역할과 책임
+
 이번 과제의 필수 구현 항목 중 `NetworkManager`를 구현하는 항목이 있다.
 
 말 그래도 네트워크와 관련된 작업들을 담당하는 클래스인데, 이 클래스를 싱글톤 패턴으로 만들어 다른 클래스에서도 사용할 수 있도록 구현하였다.
@@ -224,7 +230,9 @@ final class NetworkManager {
 }
 ```
 
+
 ### 4) 🚨 데이터 바인딩 추상화하기
+
 MainViewModel에서는 RxSwift를 활용하여 데이터 바인딩을 위한 비즈니스 로직을 작성해야 했다.
 RxSwift는 아직 어려워서 일단 기능 구현을 목표로 열심히 코드를 작성했는데, 그 결과가 아래와 같다.
 
@@ -310,7 +318,9 @@ RxSwift 코드도 함께 사용하면 구독을 통한 기능의 확장성도 �
 
 앞으로는 이런 작업을 할 때 기록을 남겨가며 작업해야겠다고 생각했다. 
 
+
 ### 5) 🚨 무한 스크롤 버그?
+
 이번 과제의 마지막 단계에서는 '무한 스크롤'을 구현해야 한다. 사실 이전에 무한 스크롤이 어떻게 구현되는 것인지 궁금해서 찾아보고 연습한 적이 있었기 때문에 구현은 어렵지 않으리라고 생각했다.
 
 우선, 무한 스크롤이 작동되는 지점을 설정해줘야 하는데, 컬렉션뷰의 델리게이트 메소드를 활용했다.
@@ -513,4 +523,5 @@ extension Int {
 
 #### 구현 결과
 ![2](https://github.com/user-attachments/assets/d3784a6f-f3d5-4b5e-984f-a6a4661a1b9a)
+
 

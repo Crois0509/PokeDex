@@ -10,6 +10,7 @@ import SnapKit
 import RxSwift
 import Kingfisher
 
+
 // 포켓몬 디테일 뷰
 final class PokemonDetailView: UIView {
     
