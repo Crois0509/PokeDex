@@ -19,6 +19,8 @@ final class SearchView: UIView {
     
     private let resultLabel = UILabel() // 검색 결과에 대한 레이블
     
+    private let clearButton = UIButton()
+    
     private let viewModel = SearchViewModel(pokemonManager: PokemonManager()) // 로직 및 데이터 바인딩 객체
     
     private let disposeBag = DisposeBag()
@@ -45,8 +47,10 @@ private extension SearchView {
         configure()
         setupSearchBar()
         setupResultLabel()
+        setupClearButton()
         setupLayout()
         addAction()
+        hideKeyboardWhenTappedAround()
         bind()
         changeSearchResult()
     }
@@ -56,7 +60,8 @@ private extension SearchView {
         self.backgroundColor = .clear
         [self.searchBar,
          self.searchResultsTableView,
-         self.resultLabel
+         self.resultLabel,
+         self.clearButton
         ].forEach {
             self.addSubview($0)
         }
@@ -65,15 +70,34 @@ private extension SearchView {
     /// 검색바에 대한 세팅을 하는 메소드
     func setupSearchBar() {
         self.searchBar.backgroundColor = .white
-        self.searchBar.placeholder = "포켓몬의 도감 번호나 이름을 입력해 주세요!"
         self.searchBar.textColor = .black
         self.searchBar.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         self.searchBar.borderStyle = .none
         self.searchBar.layer.cornerRadius = 25
         self.searchBar.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 10))
         self.searchBar.leftViewMode = .always
-        self.searchBar.clearButtonMode = .whileEditing
         self.searchBar.autocapitalizationType = .none
+        self.searchBar.keyboardType = .default
+        
+        setupPlaceHolder()
+    }
+    
+    /// 클리어버튼을 세팅하는 메소드
+    func setupClearButton() {
+        self.clearButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        self.clearButton.tintColor = .gray
+        self.clearButton.backgroundColor = .clear
+        self.clearButton.addTarget(self, action: #selector(clearText), for: .touchUpInside)
+        self.clearButton.isHidden = true
+    }
+    
+    /// 텍스트필드 플레이스홀더를 세팅하는 메소드
+    func setupPlaceHolder() {
+        let placeholderText = "포켓몬의 도감 번호나 이름을 입력해 주세요!"
+        self.searchBar.attributedPlaceholder = NSAttributedString(
+            string: placeholderText,
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray.withAlphaComponent(0.3)]
+        )
     }
     
     /// 검색 결과 레이블에 대한 세팅을 하는 메소드
@@ -111,25 +135,24 @@ private extension SearchView {
         self.resultLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
+        
+        self.clearButton.snp.makeConstraints {
+            $0.trailing.equalTo(self.searchBar.snp.trailing).inset(10)
+            $0.centerY.equalTo(self.searchBar)
+            $0.width.height.equalTo(30)
+        }
+    }
+    
+    /// 키보드를 숨기는 메소드
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tap.cancelsTouchesInView = false
+        self.addGestureRecognizer(tap)
     }
     
     /// 검색바에 액션을 추가하는 메소드
     func addAction() {
         self.searchBar.addTarget(self, action: #selector(search), for: .editingChanged)
-    }
-    
-    /// 검색바의 텍스트에 변화가 생겼을 때 실행되는 액션
-    @objc func search() {
-        guard let text = self.searchBar.text else { return }
-        
-        if text.count <= 0 {
-            self.searchResultsTableView.resetData()
-            changeSearchResult()
-        } else {
-            self.searchResultsTableView.resetData()
-            self.viewModel.search(text: text)
-            changeSearchResult()
-        }
     }
     
     /// 데이터 바인딩 메소드
@@ -184,4 +207,35 @@ private extension SearchView {
         }
     }
     
+}
+
+// MARK: - SearchView Objective-C Method
+@objc extension SearchView {
+    
+    /// 검색바의 텍스트에 변화가 생겼을 때 실행되는 액션
+    func search() {
+        guard let text = self.searchBar.text else { return }
+        
+        if text.count <= 0 {
+            self.searchResultsTableView.resetData()
+            self.clearButton.isHidden = true
+            changeSearchResult()
+        } else {
+            self.searchResultsTableView.resetData()
+            self.viewModel.search(text: text)
+            self.clearButton.isHidden = false
+            changeSearchResult()
+        }
+    }
+    
+    /// 현재 뷰를 초기상태로 복원
+    func hideKeyboard() {
+        self.endEditing(true)
+    }
+    
+    /// 검색바를 클리어하는 액션
+    func clearText() {
+        self.searchBar.text = ""
+        search()
+    }
 }
