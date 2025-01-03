@@ -10,6 +10,18 @@
 
 ***
 
+## 📱 Preview
+
+| Icon | Lunch | Main |
+| :-: | :-: | :-: |
+| ![Group 4](https://github.com/user-attachments/assets/5278cc77-7663-4ec6-9374-1f32883dc260) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 45 38](https://github.com/user-attachments/assets/ff6be187-d771-404c-8372-e47f26e4677d) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 45 45](https://github.com/user-attachments/assets/c1053daf-0a31-47bd-9b3f-402d63f2940c)
+
+| Detail | Search | Search 2 |
+| :-: | :-: | :-: |
+| ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 46 30](https://github.com/user-attachments/assets/f873d1a5-0fdc-4246-a84c-5dfd1f31c388) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 46 42](https://github.com/user-attachments/assets/60ddd6a0-6729-4ef2-aca8-abe5531c11cd) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 47 28](https://github.com/user-attachments/assets/6d2b667b-22d2-4a46-96a2-c3a66e90a5ac) |
+
+***
+
 ## 🍆 Git Flow
 
 - `main`에서 프로젝트 기초 세팅하기
