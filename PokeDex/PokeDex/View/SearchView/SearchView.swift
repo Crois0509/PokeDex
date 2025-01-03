@@ -40,7 +40,8 @@ final class SearchView: UIView {
     
     /// 스크롤을 가장 위로 올리는 메소드
     func resetScroll() {
-        guard self.searchResultsTableView.tableView.scrollsToTop else { return }
+        guard self.searchResultsTableView.tableView.scrollsToTop,
+              !self.searchResultsTableView.searchPokemonList.isEmpty else { return }
         
         let indexPath = IndexPath(row: 0, section: 0)
         self.searchResultsTableView.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
