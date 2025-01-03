@@ -89,7 +89,7 @@ private extension PokemonDetailView {
         self.imageView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(20)
             $0.centerX.equalToSuperview()
-            $0.width.height.equalTo(250)
+            $0.width.height.equalTo(240)
         }
         
         self.nameLabel.snp.makeConstraints {
@@ -164,6 +164,8 @@ private extension PokemonDetailView {
             }).disposed(by: self.disposeBag)
     }
     
+    /// 이미지뷰에 이미지를 생성하는 메소드
+    /// - Parameter id: 포켓몬 도감 번호
     func addImage(id: Int) {
         guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return }
         self.imageView.kf.setImage(with: url)

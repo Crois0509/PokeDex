@@ -66,7 +66,6 @@ private extension SearchView {
     /// 검색바에 대한 세팅을 하는 메소드
     func setupSearchBar() {
         self.searchBar.backgroundColor = .white
-        self.searchBar.placeholder = "포켓몬의 도감 번호나 이름을 입력해 주세요!"
         self.searchBar.textColor = .black
         self.searchBar.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         self.searchBar.borderStyle = .none
@@ -75,6 +74,18 @@ private extension SearchView {
         self.searchBar.leftViewMode = .always
         self.searchBar.clearButtonMode = .whileEditing
         self.searchBar.autocapitalizationType = .none
+        self.searchBar.keyboardType = .default
+        
+        setupPlaceHolder()
+    }
+    
+    /// 텍스트필드 플레이스홀더를 세팅하는 메소드
+    func setupPlaceHolder() {
+        let placeholderText = "포켓몬의 도감 번호나 이름을 입력해 주세요!"
+        self.searchBar.attributedPlaceholder = NSAttributedString(
+            string: placeholderText,
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray.withAlphaComponent(0.3)]
+        )
     }
     
     /// 검색 결과 레이블에 대한 세팅을 하는 메소드
