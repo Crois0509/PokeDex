@@ -37,6 +37,14 @@ final class SearchView: UIView {
         
         setupUI()
     }
+    
+    /// 스크롤을 가장 위로 올리는 메소드
+    func resetScroll() {
+        guard self.searchResultsTableView.tableView.scrollsToTop else { return }
+        
+        let indexPath = IndexPath(row: 0, section: 0)
+        self.searchResultsTableView.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+    }
 }
 
 // MARK: - SearchView UI Setting Method
