@@ -19,6 +19,8 @@ final class SearchView: UIView {
     
     private let resultLabel = UILabel() // 검색 결과에 대한 레이블
     
+    private let clearButton = UIButton()
+    
     private let viewModel = SearchViewModel(pokemonManager: PokemonManager()) // 로직 및 데이터 바인딩 객체
     
     private let disposeBag = DisposeBag()
@@ -45,6 +47,7 @@ private extension SearchView {
         configure()
         setupSearchBar()
         setupResultLabel()
+        setupClearButton()
         setupLayout()
         addAction()
         hideKeyboardWhenTappedAround()
@@ -57,7 +60,8 @@ private extension SearchView {
         self.backgroundColor = .clear
         [self.searchBar,
          self.searchResultsTableView,
-         self.resultLabel
+         self.resultLabel,
+         self.clearButton
         ].forEach {
             self.addSubview($0)
         }
@@ -72,11 +76,19 @@ private extension SearchView {
         self.searchBar.layer.cornerRadius = 25
         self.searchBar.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 10))
         self.searchBar.leftViewMode = .always
-        self.searchBar.clearButtonMode = .whileEditing
         self.searchBar.autocapitalizationType = .none
         self.searchBar.keyboardType = .default
         
         setupPlaceHolder()
+    }
+    
+    /// 클리어버튼을 세팅하는 메소드
+    func setupClearButton() {
+        self.clearButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        self.clearButton.tintColor = .gray
+        self.clearButton.backgroundColor = .clear
+        self.clearButton.addTarget(self, action: #selector(clearText), for: .touchUpInside)
+        self.clearButton.isHidden = true
     }
     
     /// 텍스트필드 플레이스홀더를 세팅하는 메소드
@@ -122,6 +134,12 @@ private extension SearchView {
         
         self.resultLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
+        }
+        
+        self.clearButton.snp.makeConstraints {
+            $0.trailing.equalTo(self.searchBar.snp.trailing).inset(10)
+            $0.centerY.equalTo(self.searchBar)
+            $0.width.height.equalTo(30)
         }
     }
     
@@ -200,10 +218,12 @@ private extension SearchView {
         
         if text.count <= 0 {
             self.searchResultsTableView.resetData()
+            self.clearButton.isHidden = true
             changeSearchResult()
         } else {
             self.searchResultsTableView.resetData()
             self.viewModel.search(text: text)
+            self.clearButton.isHidden = false
             changeSearchResult()
         }
     }
@@ -211,5 +231,11 @@ private extension SearchView {
     /// 현재 뷰를 초기상태로 복원
     func hideKeyboard() {
         self.endEditing(true)
+    }
+    
+    /// 검색바를 클리어하는 액션
+    func clearText() {
+        self.searchBar.text = ""
+        search()
     }
 }
