@@ -41,7 +41,7 @@ final class MainViewModel {
     /// 현재 포켓몬 도감 번호가 최대 포켓몬 수 이하인지 확인하는 메소드
     /// - Returns: 최대 포켓몬 수보다 작을 경우 true, 클 경우 false
     func getCurrentOffset() -> Bool {
-        return self.offset <= self.pokemons
+        return self.offset < self.pokemons
     }
 }
 
