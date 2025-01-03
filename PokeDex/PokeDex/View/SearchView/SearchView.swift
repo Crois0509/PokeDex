@@ -47,6 +47,7 @@ private extension SearchView {
         setupResultLabel()
         setupLayout()
         addAction()
+        hideKeyboardWhenTappedAround()
         bind()
         changeSearchResult()
     }
@@ -113,23 +114,16 @@ private extension SearchView {
         }
     }
     
+    /// 키보드를 숨기는 메소드
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tap.cancelsTouchesInView = false
+        self.addGestureRecognizer(tap)
+    }
+    
     /// 검색바에 액션을 추가하는 메소드
     func addAction() {
         self.searchBar.addTarget(self, action: #selector(search), for: .editingChanged)
-    }
-    
-    /// 검색바의 텍스트에 변화가 생겼을 때 실행되는 액션
-    @objc func search() {
-        guard let text = self.searchBar.text else { return }
-        
-        if text.count <= 0 {
-            self.searchResultsTableView.resetData()
-            changeSearchResult()
-        } else {
-            self.searchResultsTableView.resetData()
-            self.viewModel.search(text: text)
-            changeSearchResult()
-        }
     }
     
     /// 데이터 바인딩 메소드
@@ -184,4 +178,27 @@ private extension SearchView {
         }
     }
     
+}
+
+// MARK: - SearchView Objective-C Method
+@objc extension SearchView {
+    
+    /// 검색바의 텍스트에 변화가 생겼을 때 실행되는 액션
+    func search() {
+        guard let text = self.searchBar.text else { return }
+        
+        if text.count <= 0 {
+            self.searchResultsTableView.resetData()
+            changeSearchResult()
+        } else {
+            self.searchResultsTableView.resetData()
+            self.viewModel.search(text: text)
+            changeSearchResult()
+        }
+    }
+    
+    /// 현재 뷰를 초기상태로 복원
+    func hideKeyboard() {
+        self.endEditing(true)
+    }
 }
