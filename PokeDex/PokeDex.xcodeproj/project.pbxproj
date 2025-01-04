@@ -44,6 +44,7 @@
 		AA9AA9A42D28DD9400EA7F09 /* MyPokemonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA9A32D28DD9400EA7F09 /* MyPokemonView.swift */; };
 		AA9AA9A62D28DD9C00EA7F09 /* MyPokemonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA9A52D28DD9C00EA7F09 /* MyPokemonViewController.swift */; };
 		AA9AA9A82D28DDA700EA7F09 /* MyPokemonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AA9A72D28DDA700EA7F09 /* MyPokemonCell.swift */; };
+		AA9AAA3C2D290F2C00EA7F09 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9AAA3B2D290F2C00EA7F09 /* AlertManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +84,7 @@
 		AA9AA9A32D28DD9400EA7F09 /* MyPokemonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPokemonView.swift; sourceTree = "<group>"; };
 		AA9AA9A52D28DD9C00EA7F09 /* MyPokemonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPokemonViewController.swift; sourceTree = "<group>"; };
 		AA9AA9A72D28DDA700EA7F09 /* MyPokemonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPokemonCell.swift; sourceTree = "<group>"; };
+		AA9AAA3B2D290F2C00EA7F09 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 		AA75C7092D1D1BAD009B2A9D /* View */ = {
 			isa = PBXGroup;
 			children = (
+				AA9AAA3A2D290F1700EA7F09 /* AlertManager */,
 				AA9AA9A22D28DCDA00EA7F09 /* MyPokemonView */,
 				AA9AA85D2D237F6700EA7F09 /* SearchView */,
 				AA9AA6A92D22B93D00EA7F09 /* TabBar */,
@@ -245,6 +248,14 @@
 			path = MyPokemonView;
 			sourceTree = "<group>";
 		};
+		AA9AAA3A2D290F1700EA7F09 /* AlertManager */ = {
+			isa = PBXGroup;
+			children = (
+				AA9AAA3B2D290F2C00EA7F09 /* AlertManager.swift */,
+			);
+			path = AlertManager;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -349,6 +360,7 @@
 				AA75C72C2D1F9654009B2A9D /* DetailViewModel.swift in Sources */,
 				AA9AA9072D23D89B00EA7F09 /* SearchViewModel.swift in Sources */,
 				AA9AA85F2D237F7900EA7F09 /* SearchView.swift in Sources */,
+				AA9AAA3C2D290F2C00EA7F09 /* AlertManager.swift in Sources */,
 				AA9AA6AB2D22B95300EA7F09 /* MainTabBarController.swift in Sources */,
 				AA9AA85C2D23759900EA7F09 /* TabBarViewModel.swift in Sources */,
 				AA75C7342D1FC75E009B2A9D /* PokemonTypeTranslator.swift in Sources */,
