@@ -13,9 +13,9 @@ protocol CoreDataManaged: AnyObject {
     var context: NSManagedObjectContext { get }
     
     func savedPokemon(id: Int, name: String)
-    func readAllData()
+    func readAllData() -> [Pokemons]
     func updatePokemon()
-    func deletePokemon()
+    func deletePokemon(_ pokemon: Pokemons)
     func saveContext() throws
 }
 
