@@ -12,6 +12,7 @@ enum APIEndpoint {
     case pokemonList(limit: Int, offset: Int)
     case pokemonDetails(id: Int)
     case pokemonImageURL(id: Int)
+    case monsterBall
     case customURL(url: String)
     
     // 각 케이스별로 다른 URL을 get 하는 프로퍼티
@@ -23,6 +24,8 @@ enum APIEndpoint {
             return "https://pokeapi.co/api/v2/pokemon/\(id)/"
         case .pokemonImageURL(id: let id):
             return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(id).png"
+        case .monsterBall:
+            return "https://i.namu.wiki/i/x7KrsctDuACm2dLbaM0X2Uag7BoL9sf9DLVauPztdApPBPn5yL1rMm8fSOBuREhK9lAKskl7oJ177UuValUIcg.webp"
         case .customURL(url: let url):
             return url
         }
