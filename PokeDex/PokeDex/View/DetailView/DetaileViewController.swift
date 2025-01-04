@@ -68,7 +68,14 @@ private extension DetaileViewController {
     }
     
     @objc func tryPokemonCapture() {
-        
+        switch self.detailView.successCapturedPokemon() {
+        case true:
+            AlertManager.alert.showAlert(on: self, title: "포획 성공!", message: "포켓몬이 내 포켓몬에\n저장되었습니다.")
+            
+        case false:
+            AlertManager.alert.showActionSheet(on: self, message: "포획 실패!")
+            
+        }
     }
     
     /// 디테일뷰의 레이아웃을 설정하는 메소드
