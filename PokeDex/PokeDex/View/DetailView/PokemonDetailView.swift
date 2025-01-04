@@ -18,6 +18,8 @@ final class PokemonDetailView: UIView {
     
     private let viewModel: DetailViewModel // 초기화시 주입
     
+    private var pokemon: (id: Int, name: String)?
+    
     private let imageView = UIImageView()
     private let nameLabel = UILabel()
     private let infoLabel = UILabel()
@@ -34,6 +36,11 @@ final class PokemonDetailView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func successCapturedPokemon() -> Bool {
+        guard let id = self.pokemon?.id else { return false }
+        return self.viewModel.capture(id: id)
     }
 }
 
@@ -157,6 +164,7 @@ private extension PokemonDetailView {
                                  height: data.height / 10,
                                  weight: data.weight / 10)
                 
+                owner.pokemon = (id: data.id, name: name)
                 
             }, onError: { error in
                 print(error)

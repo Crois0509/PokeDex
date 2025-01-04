@@ -42,4 +42,63 @@ final class DetailViewModel {
                 
             }).disposed(by: self.disposeBag)
     }
+    
+    func capture(id: Int) -> Bool {
+        let probability = Int.random(in: 0...100)
+        
+        switch id {
+        case (1...99):
+            guard (0...90).contains(probability) else { return false }
+            return successCapture()
+            
+        case (100...199):
+            guard (0...85).contains(probability) else { return false }
+            return successCapture()
+            
+        case (200...299):
+            guard (0...78).contains(probability) else { return false }
+            return successCapture()
+            
+        case (300...399):
+            guard (0...70).contains(probability) else { return false }
+            return successCapture()
+            
+        case (400...499):
+            guard (0...62).contains(probability) else { return false }
+            return successCapture()
+            
+        case (500...599):
+            guard (0...55).contains(probability) else { return false }
+            return successCapture()
+            
+        case (600...699):
+            guard (0...47).contains(probability) else { return false }
+            return successCapture()
+            
+        case (700...799):
+            guard (0...36).contains(probability) else { return false }
+            return successCapture()
+            
+        case (800...899):
+            guard (0...29).contains(probability) else { return false }
+            return successCapture()
+            
+        case (900...999):
+            guard (0...20).contains(probability) else { return false }
+            return successCapture()
+            
+        case (1000...):
+            guard (0...10).contains(probability) else { return false }
+            return successCapture()
+            
+        default: break
+        }
+        return false
+    }
+    
+    private func successCapture() -> Bool {
+        // 코어 데이터에 저장
+        
+        return true
+    }
 }
