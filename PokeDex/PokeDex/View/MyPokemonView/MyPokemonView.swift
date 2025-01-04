@@ -16,6 +16,8 @@ final class MyPokemonView: UIView {
     
     private let infoLabel = UILabel()
     
+    private var myPokemons: [Pokemons] = []
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -38,6 +40,7 @@ private extension MyPokemonView {
         setupTableView()
         setupInfoLabel()
         setupLayout()
+        readMyPokemons()
     }
     
     func configure() {
@@ -97,6 +100,10 @@ private extension MyPokemonView {
         }
     }
     
+    func readMyPokemons() {
+        self.myPokemons = CoreDataManager.coreDatashared.readAllData()
+    }
+    
 }
 
 extension MyPokemonView: UITableViewDataSource {
@@ -111,6 +118,15 @@ extension MyPokemonView: UITableViewDataSource {
         }
         
         cell.selectionStyle = .none
+        
+        if self.myPokemons.isEmpty || self.myPokemons.count - 1 < indexPath.row {
+            cell.configCell(id: nil, name: nil)
+        } else {
+            let id = Int(self.myPokemons[indexPath.row].id)
+            let name = PokemonTranslator.getKoreanName(for: self.myPokemons[indexPath.row].name ?? "")
+            
+            cell.configCell(id: id, name: name)
+        }
         
         return cell
     }

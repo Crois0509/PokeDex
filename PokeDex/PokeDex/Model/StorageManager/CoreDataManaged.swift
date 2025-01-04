@@ -21,7 +21,7 @@ protocol CoreDataManaged: AnyObject {
 
 extension CoreDataManaged {
     var persistentContainer: NSPersistentContainer {
-        let container = NSPersistentContainer(name: "KickboardModel")
+        let container = NSPersistentContainer(name: "MyPokemon")
         container.loadPersistentStores { _, error in
             if let error = error {
                 fatalError("Core Data Error: \(error.localizedDescription)")
@@ -36,7 +36,11 @@ extension CoreDataManaged {
     
     func saveContext() throws {
         if self.context.hasChanges {
-            try self.context.save()
+            do {
+                try self.context.save()
+            } catch {
+                print(error)
+            }
         }
     }
 }

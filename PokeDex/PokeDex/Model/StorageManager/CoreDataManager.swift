@@ -8,18 +8,28 @@
 import UIKit
 import CoreData
 
+enum PokemonsKeys: String {
+    case id
+    case name
+}
+
 final class CoreDataManager: CoreDataManaged {
     
-    static let shared = CoreDataManager()
+    static let coreDatashared = CoreDataManager()
     private init() {}
     
     func savedPokemon(id: Int, name: String) {
-        let description = NSEntityDescription.entity(forEntityName: String(describing: Pokemons.self), in: self.context)!
-        let entity = Pokemons(entity: description, insertInto: self.context)
-        entity.id = Int32(id)
-        entity.name = name
+        let context = self.context
+        guard let description = NSEntityDescription.entity(forEntityName: String(describing: Pokemons.self), in: context) else { return }
+        let entity: NSManagedObject = NSManagedObject.init(entity: description, insertInto: context)
+        entity.setValue(id, forKey: PokemonsKeys.id.rawValue)
+        entity.setValue(name, forKey: PokemonsKeys.name.rawValue)
         
-        try? self.saveContext()
+        do {
+            try context.save()
+        } catch {
+            print(error)
+        }
     }
     
     func readAllData() -> [Pokemons] {
@@ -33,6 +43,11 @@ final class CoreDataManager: CoreDataManaged {
     
     func deletePokemon(_ pokemon: Pokemons) {
         self.context.delete(pokemon)
-        try? self.saveContext()
+        
+        do {
+            try self.saveContext()
+        } catch {
+            print(error)
+        }
     }
 }

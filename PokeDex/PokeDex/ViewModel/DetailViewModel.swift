@@ -98,6 +98,11 @@ final class DetailViewModel {
     
     private func successCapture() -> Bool {
         // 코어 데이터에 저장
+        guard let data = try? self.pokemonDetailData.value().first else { return false }
+        let id = data.id
+        let name = data.name
+        
+        CoreDataManager.coreDatashared.savedPokemon(id: id, name: name)
         
         return true
     }

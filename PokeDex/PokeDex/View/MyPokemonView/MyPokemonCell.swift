@@ -33,7 +33,7 @@ final class MyPokemonCell: UITableViewCell {
         setupUI()
     }
     
-    func configCell(id: Int?, name: String) {
+    func configCell(id: Int?, name: String?) {
         if let id = id {
             guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return }
             self.pokemon.kf.setImage(with: url)
@@ -102,7 +102,7 @@ private extension MyPokemonCell {
         }
         
         self.nameLabel.snp.makeConstraints {
-            $0.centerX.equalTo(self.numberLabel)
+            $0.leading.equalTo(self.numberLabel.snp.leading)
             $0.bottom.equalToSuperview().inset(15)
         }
         
