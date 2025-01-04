@@ -65,7 +65,7 @@ private extension MyPokemonView {
         self.myPokemonTable.separatorStyle = .none
         self.myPokemonTable.showsVerticalScrollIndicator = false
         self.myPokemonTable.showsHorizontalScrollIndicator = false
-        self.myPokemonTable.isScrollEnabled = true
+        self.myPokemonTable.isScrollEnabled = false
         self.myPokemonTable.register(MyPokemonCell.self, forCellReuseIdentifier: MyPokemonCell.id)
     }
     
@@ -88,7 +88,7 @@ private extension MyPokemonView {
             $0.top.equalTo(self.titleLabel.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.trailing.leading.equalToSuperview().inset(10)
-//            $0.height.equalTo(500)
+            $0.height.equalTo(500)
         }
         
         self.infoLabel.snp.makeConstraints {
@@ -109,6 +109,8 @@ extension MyPokemonView: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyPokemonCell.id, for: indexPath) as? MyPokemonCell else {
             return UITableViewCell()
         }
+        
+        cell.selectionStyle = .none
         
         return cell
     }
