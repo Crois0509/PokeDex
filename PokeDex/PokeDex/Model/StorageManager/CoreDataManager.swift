@@ -7,3 +7,10 @@
 
 import UIKit
 import CoreData
+
+protocol CoreDataManaged: AnyObject {
+    func savedPokemon()
+    func readAllData()
+    func updatePokemon()
+    func deletePokemon()
+}
