@@ -41,6 +41,7 @@ final class MyPokemonCell: UITableViewCell {
             self.numberLabel.text = "No.\(id)"
         } else {
             self.blankLabel.isHidden = false
+            self.isUserInteractionEnabled = false
             guard let url = URL(string: APIEndpoint.monsterBall.urlString) else { return }
             self.pokemon.kf.setImage(with: url)
         }

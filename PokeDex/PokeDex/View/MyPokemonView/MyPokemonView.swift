@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxCocoa
+import RxSwift
 
 final class MyPokemonView: UIView {
+    
+    private let disposeBag = DisposeBag()
     
     private let titleLabel = UILabel()
     
@@ -16,7 +20,7 @@ final class MyPokemonView: UIView {
     
     private let infoLabel = UILabel()
     
-    private var myPokemons: [Pokemons] = []
+    private var myPokemons: [(id: Int, name: String)] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -41,6 +45,7 @@ private extension MyPokemonView {
         setupInfoLabel()
         setupLayout()
         readMyPokemons()
+        selectCell()
     }
     
     func configure() {
@@ -101,7 +106,42 @@ private extension MyPokemonView {
     }
     
     func readMyPokemons() {
-        self.myPokemons = CoreDataManager.coreDatashared.readAllData()
+        let pokemons = CoreDataManager.coreDatashared.readAllData()
+        var myPokemons: [(id: Int, name: String)] = []
+        pokemons.forEach {
+            let id = Int($0.id)
+            let name = $0.name ?? ""
+            let item = (id, name)
+            myPokemons.append(item)
+        }
+        self.myPokemons = myPokemons
+    }
+    
+    func selectCell() {
+        self.myPokemonTable.rx.itemSelected
+            .withUnretained(self)
+            .subscribe(on: MainScheduler.instance)
+            .subscribe(onNext: { owner, indexPath in
+                                
+                let id = owner.myPokemons[indexPath.row].id
+                
+                owner.presentDetailView(id: id)
+                
+            }).disposed(by: self.disposeBag)
+    }
+    
+    /// 네비게이션을 통해 디테일뷰로 이동하는 메소드
+    /// - Parameter id: 포켓몬의 ID
+    func presentDetailView(id: Int) {
+        DispatchQueue.main.async {
+            let detailView = PokemonDetailView(
+                id: id,
+                model: DetailViewModel(pokemonManager: PokemonManager(), id: id)
+            )
+            
+            guard let view = self.window?.rootViewController as? UINavigationController else { return }
+            view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+        }
     }
     
 }
@@ -123,7 +163,7 @@ extension MyPokemonView: UITableViewDataSource {
             cell.configCell(id: nil, name: nil)
         } else {
             let id = Int(self.myPokemons[indexPath.row].id)
-            let name = PokemonTranslator.getKoreanName(for: self.myPokemons[indexPath.row].name ?? "")
+            let name = PokemonTranslator.getKoreanName(for: self.myPokemons[indexPath.row].name)
             
             cell.configCell(id: id, name: name)
         }
