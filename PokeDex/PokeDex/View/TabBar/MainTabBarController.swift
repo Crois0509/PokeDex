@@ -120,11 +120,15 @@ private extension MainTabBarController {
     @objc func dismissSideMenu() {
         guard let sideView = self.children.last as? MyPokemonViewController else { return }
         
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+            sideView.view.frame.origin.x += sideView.view.bounds.width
+            self.blockingView.isHidden = true
+            self.view.layoutIfNeeded()
+            
+        }, completion: { _ in
             sideView.view.removeFromSuperview()
             sideView.removeFromParent()
-            self.blockingView.isHidden = true
-        }
+        })
     }
     
     func presentSideMenu() {
@@ -132,17 +136,25 @@ private extension MainTabBarController {
         vc.isPresentSideMenu = {
             let sideView = MyPokemonViewController()
             
-            UIView.animate(withDuration: 0.5) {
-                self.blockingView.isHidden = false
-                self.addChild(sideView)
-                self.view.addSubview(sideView.view)
-                sideView.view.snp.makeConstraints {
-                    $0.top.bottom.equalToSuperview()
-                    $0.leading.equalToSuperview().inset(100)
-                    $0.trailing.equalToSuperview().offset(100)
-                }
-                sideView.didMove(toParent: self)
+            self.addChild(sideView)
+            self.view.addSubview(sideView.view)
+            sideView.view.snp.makeConstraints {
+                $0.top.bottom.equalToSuperview()
+                $0.leading.equalTo(self.view.snp.trailing)
+                $0.width.equalTo(sideView.view.bounds.width)
             }
+            
+            self.view.layoutIfNeeded()
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                self.blockingView.isHidden = false
+                
+                sideView.view.frame.origin.x -= sideView.view.bounds.width - 100
+                
+                self.view.layoutIfNeeded()
+            }, completion: { _ in
+                sideView.didMove(toParent: self)
+            })
         }
     }
 }
