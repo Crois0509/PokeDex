@@ -91,13 +91,18 @@ private extension DetailViewController {
     }
     
     @objc func tryPokemonCapture() {
-        switch self.detailView.successCapturedPokemon() {
-        case true:
-            AlertManager.alert.showAlert(on: self, title: "포획 성공!", message: "포켓몬이 내 포켓몬에\n저장되었습니다.")
+        if CoreDataManager.coreDatashared.readAllData().count >= 6 {
+            AlertManager.alert.showAlert(on: self, title: "포획 실패", message: "내 포켓몬이 슬롯이 가득 차서\n더이상 포켓몬을 포획할 수 없습니다.\n내 포켓몬 슬롯을 비운 후\n다시 시도해 주세요.")
             
-        case false:
-            AlertManager.alert.showActionSheet(on: self, message: "포획 실패!", nil)
-
+        } else {
+            switch self.detailView.successCapturedPokemon() {
+            case true:
+                AlertManager.alert.showAlert(on: self, title: "포획 성공!", message: "포켓몬이 내 포켓몬에\n저장되었습니다.")
+                
+            case false:
+                AlertManager.alert.showActionSheet(on: self, message: "포획 실패!", nil)
+                
+            }
         }
     }
     

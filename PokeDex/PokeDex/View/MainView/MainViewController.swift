@@ -72,7 +72,7 @@ private extension MainViewController {
         }
         
         self.sideMenuButton.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(20)
+            $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(30)
             $0.trailing.equalToSuperview().inset(30)
         }
     }
