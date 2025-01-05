@@ -19,7 +19,7 @@ final class PokemonDetailView: UIView {
     private let viewModel: DetailViewModel // 초기화시 주입
     
     private var pokemon: (id: Int, name: String)?
-    
+        
     private let imageView = UIImageView()
     private let nameLabel = UILabel()
     private let infoLabel = UILabel()

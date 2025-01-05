@@ -16,6 +16,7 @@ enum PokemonsKeys: String {
 final class CoreDataManager: CoreDataManaged {
     
     static let coreDatashared = CoreDataManager()
+    
     private init() {}
     
     func savedPokemon(id: Int, name: String) {
@@ -33,6 +34,7 @@ final class CoreDataManager: CoreDataManaged {
     }
     
     func readAllData() -> [Pokemons] {
+//        let context = self.context
         let fetchRequest: NSFetchRequest<Pokemons> = Pokemons.fetchRequest()
         return (try? self.context.fetch(fetchRequest)) ?? []
     }
@@ -41,11 +43,27 @@ final class CoreDataManager: CoreDataManaged {
         // 업데이트 기능 필요한 경우 구현
     }
     
-    func deletePokemon(_ pokemon: Pokemons) {
-        self.context.delete(pokemon)
+    func search(_ id: NSManagedObjectID, _ context: NSManagedObjectContext) -> Pokemons? {
+        do {
+            let pokemon = try context.existingObject(with: id) as? Pokemons
+            return pokemon
+            
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    func deletePokemon(_ id: NSManagedObjectID) {
+        let context = self.context
+        guard let pokemon = search(id, context) else { return }
+        if pokemon.managedObjectContext !== context {
+            print("pokemon's context does not match self.context")
+        }
+        context.delete(pokemon)
         
         do {
-            try self.saveContext()
+            try context.save()
         } catch {
             print(error)
         }

@@ -15,7 +15,7 @@ protocol CoreDataManaged: AnyObject {
     func savedPokemon(id: Int, name: String)
     func readAllData() -> [Pokemons]
     func updatePokemon()
-    func deletePokemon(_ pokemon: Pokemons)
+    func deletePokemon(_ id: NSManagedObjectID)
     func saveContext() throws
 }
 

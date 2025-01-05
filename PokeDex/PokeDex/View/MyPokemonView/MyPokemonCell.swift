@@ -33,12 +33,20 @@ final class MyPokemonCell: UITableViewCell {
         setupUI()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        setupUI()
+    }
+    
     func configCell(id: Int?, name: String?) {
         if let id = id {
             guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return }
             self.pokemon.kf.setImage(with: url)
             self.nameLabel.text = name
+            self.nameLabel.isHidden = false
             self.numberLabel.text = "No.\(id)"
+            self.numberLabel.isHidden = false
         } else {
             self.blankLabel.isHidden = false
             self.isUserInteractionEnabled = false
@@ -84,9 +92,9 @@ private extension MyPokemonCell {
             $0.textColor = .white
             $0.numberOfLines = 1
             $0.textAlignment = .left
+            $0.isHidden = true
         }
         self.nameLabel.font = UIFont.boldSystemFont(ofSize: 25)
-        self.blankLabel.isHidden = true
         self.blankLabel.text = "빈 슬롯입니다."
     }
     

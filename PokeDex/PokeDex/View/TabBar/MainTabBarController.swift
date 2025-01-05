@@ -133,7 +133,8 @@ private extension MainTabBarController {
     
     func presentSideMenu() {
         guard let vc = self.viewControllers.first as? MainViewController else { return }
-        vc.isPresentSideMenu = {
+        vc.isPresentSideMenu = { [weak self] in
+            guard let self else { return }
             let sideView = MyPokemonViewController()
             
             self.addChild(sideView)

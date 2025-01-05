@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxCocoa
 import RxSwift
+import CoreData
 
 final class MyPokemonView: UIView {
     
@@ -20,7 +21,7 @@ final class MyPokemonView: UIView {
     
     private let infoLabel = UILabel()
     
-    private var myPokemons: [(id: Int, name: String)] = []
+    private var myPokemons: [(id: Int, name: String, obId: NSManagedObjectID)] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,6 +33,11 @@ final class MyPokemonView: UIView {
         super.init(coder: coder)
         
         setupUI()
+    }
+    
+    func reloadMyPokemons() {
+        readMyPokemons()
+        
     }
     
 }
@@ -107,14 +113,16 @@ private extension MyPokemonView {
     
     func readMyPokemons() {
         let pokemons = CoreDataManager.coreDatashared.readAllData()
-        var myPokemons: [(id: Int, name: String)] = []
+        var myPokemons: [(id: Int, name: String, obId: NSManagedObjectID)] = []
         pokemons.forEach {
             let id = Int($0.id)
             let name = $0.name ?? ""
-            let item = (id, name)
+            let obId = $0.objectID
+            let item = (id, name, obId)
             myPokemons.append(item)
         }
         self.myPokemons = myPokemons
+        self.myPokemonTable.reloadData()
     }
     
     func selectCell() {
@@ -123,24 +131,28 @@ private extension MyPokemonView {
             .subscribe(on: MainScheduler.instance)
             .subscribe(onNext: { owner, indexPath in
                                 
-                let id = owner.myPokemons[indexPath.row].id
+                let pokemon = owner.myPokemons[indexPath.row]
+                let id = pokemon.id
+                let obID = pokemon.obId
                 
-                owner.presentDetailView(id: id)
+                owner.presentDetailView(id: id, obID: obID)
                 
             }).disposed(by: self.disposeBag)
     }
     
     /// 네비게이션을 통해 디테일뷰로 이동하는 메소드
     /// - Parameter id: 포켓몬의 ID
-    func presentDetailView(id: Int) {
+    func presentDetailView(id: Int, obID: NSManagedObjectID) {
         DispatchQueue.main.async {
             let detailView = PokemonDetailView(
                 id: id,
                 model: DetailViewModel(pokemonManager: PokemonManager(), id: id)
             )
             
+            let detailVC = DetailViewController(detailView: detailView, obID)
+            
             guard let view = self.window?.rootViewController as? UINavigationController else { return }
-            view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+            view.pushViewController(detailVC, animated: true)
         }
     }
     

@@ -18,6 +18,11 @@ final class MyPokemonViewController: UIViewController {
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.myPokemonView.reloadMyPokemons()
+    }
 }
 
 private extension MyPokemonViewController {

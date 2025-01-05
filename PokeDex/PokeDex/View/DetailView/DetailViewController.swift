@@ -7,9 +7,17 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 // 포켓몬 디테일뷰를 보여주는 뷰 컨트롤러
-final class DetaileViewController: UIViewController {
+final class DetailViewController: UIViewController {
+    enum DetailState {
+        case dex, myPokemon
+    }
+    
+    private var state: DetailState
+    
+    private var objectID: NSManagedObjectID?
     
     private let detailView: PokemonDetailView // 뷰 컨트롤러 초기화시 주입
     
@@ -18,6 +26,14 @@ final class DetaileViewController: UIViewController {
     // MARK: - DetaileViewController Initializer
     init(detailView: PokemonDetailView) {
         self.detailView = detailView
+        self.state = .dex
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(detailView: PokemonDetailView, _ objectID: NSManagedObjectID) {
+        self.detailView = detailView
+        self.state = .myPokemon
+        self.objectID = objectID
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,7 +50,7 @@ final class DetaileViewController: UIViewController {
 }
 
 // MARK: - DetaileViewController UI Setting Method
-private extension DetaileViewController {
+private extension DetailViewController {
     
     /// 모든 UI를 세팅하는 메소드
     func setupUI() {
@@ -54,7 +70,8 @@ private extension DetaileViewController {
     }
     
     func setupCapturedButton() {
-        self.capturedButton.setTitle("포획하기", for: .normal)
+        let title = self.state == .dex ? "포획하기" : "놓아주기"
+        self.capturedButton.setTitle(title, for: .normal)
         self.capturedButton.setTitleColor(.white, for: .normal)
         self.capturedButton.backgroundColor = .pointBlue
         self.capturedButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
@@ -64,7 +81,13 @@ private extension DetaileViewController {
     }
     
     func addAction() {
-        self.capturedButton.addTarget(self, action: #selector(tryPokemonCapture), for: .touchUpInside)
+        switch self.state {
+        case .dex:
+            self.capturedButton.addTarget(self, action: #selector(tryPokemonCapture), for: .touchUpInside)
+            
+        case .myPokemon:
+            self.capturedButton.addTarget(self, action: #selector(throwPokemon), for: .touchUpInside)
+        }
     }
     
     @objc func tryPokemonCapture() {
@@ -73,8 +96,19 @@ private extension DetaileViewController {
             AlertManager.alert.showAlert(on: self, title: "포획 성공!", message: "포켓몬이 내 포켓몬에\n저장되었습니다.")
             
         case false:
-            AlertManager.alert.showActionSheet(on: self, message: "포획 실패!")
+            AlertManager.alert.showActionSheet(on: self, message: "포획 실패!", nil)
+
+        }
+    }
+    
+    @objc func throwPokemon() {
+        AlertManager.alert.confirmThrowPokemon(on: self) { [weak self] in
+            guard let self, let id = self.objectID else { return }
+            CoreDataManager.coreDatashared.deletePokemon(id)
             
+            AlertManager.alert.showActionSheet(on: self, message: "포켓몬을 놓아주었다") {
+                self.navigationController?.popViewController(animated: true)
+            }
         }
     }
     
