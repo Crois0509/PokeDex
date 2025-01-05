@@ -60,6 +60,13 @@ final class PokemonCollectionView: UIView {
         bind()
         setupUI()
     }
+    
+    /// 스크롤을 가장 위로 올리는 메소드
+    func resetScroll() {
+        guard self.collectionView.scrollsToTop else { return }
+        let indexPath = IndexPath(row: 0, section: 0)
+        self.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+    }
 }
 
 // MARK: - PokemonCollectionView UI Setting Method
@@ -153,7 +160,7 @@ private extension PokemonCollectionView {
                 )
                 
                 guard let view = owner.window?.rootViewController as? UINavigationController else { return }
-                view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+                view.pushViewController(DetailViewController(detailView: detailView), animated: true)
                 
             }, onError: { error in
                 

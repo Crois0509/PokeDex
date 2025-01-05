@@ -10,6 +10,27 @@
 
 ***
 
+## 📱 Preview
+
+| | 시연 영상 | |
+| :-: | :-------------------: | :-: |
+| | ![무제](https://github.com/user-attachments/assets/7304c92a-7ba8-47c4-9628-1746486d8d1c) | |
+
+| Icon | Lunch | Main |
+| :-: | :-: | :-: |
+| ![Group 4](https://github.com/user-attachments/assets/5278cc77-7663-4ec6-9374-1f32883dc260) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 45 38](https://github.com/user-attachments/assets/ff6be187-d771-404c-8372-e47f26e4677d) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 08 39](https://github.com/user-attachments/assets/50510f00-aba2-439b-8836-48b66b0d3f49) |
+
+
+| Detail | Search | Search 2 |
+| :-: | :-: | :-: |
+| ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 09 26](https://github.com/user-attachments/assets/773b769b-bd06-4387-9675-2d659d73670b) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 46 42](https://github.com/user-attachments/assets/60ddd6a0-6729-4ef2-aca8-abe5531c11cd) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 08 25](https://github.com/user-attachments/assets/aa1f8dc2-c90e-4c13-b65b-a1bb77cc5cb3) |
+
+| SideMenu | MyPokemon | Throw |
+| :-: | :-: | :-: |
+| ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 07 55](https://github.com/user-attachments/assets/e1a68e63-d0e3-4fde-834b-0f48a5db7a5b) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 11 16](https://github.com/user-attachments/assets/4fbf731a-650f-4b66-b703-ed53bd9a9892) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 08 05](https://github.com/user-attachments/assets/1194d66e-3c58-4570-9e8f-54b919986cad) |
+
+***
+
 ## 🍆 Git Flow
 
 - `main`에서 프로젝트 기초 세팅하기
@@ -524,4 +545,256 @@ extension Int {
 #### 구현 결과
 ![2](https://github.com/user-attachments/assets/d3784a6f-f3d5-4b5e-984f-a6a4661a1b9a)
 
+### 7) 🚨 사이드 메뉴를 구현하는 방법
+이번에는 챌린지 도전과제로 '내 포켓몬'을 관리하는 사이드바를 구현해 보기로 했다. 
+상상만으로 UI를 구현하는 것은 한계가 있기 때문에 우선 UI를 피그마로 구현하고 제작을 진행하기로 하였다.
 
+| 피그마 UI 디자인 |
+| :-: |
+| ![iPhone 16 Pro - 4](https://github.com/user-attachments/assets/7cce69b7-fb41-479f-9c18-f8f6cc172e12) |
+
+디자인을 마친 후에는 코드로 디자인에 맞게 코드를 작성하였다. 이 때, 사이드바로 구현해야 하기 때문에 UI가 뷰 컨트롤러를 가득 채우지 않도록 `width` 값을 `-100`으로 하여 UIView를 구성하였다.
+```swift
+self.myPokemonView.snp.makeConstraints {
+	$0.top.bottom.equalTo(self.view.safeAreaLayoutGuide)
+	$0.leading.equalToSuperview()
+	$0.trailing.equalToSuperview().inset(100)
+}
+```
+| UI 구현 이미지 |
+| :-: |
+| ![스크린샷 2025-01-05 14 31 20](https://github.com/user-attachments/assets/bbe0ca23-f872-4d73-befa-721d505dad12) |
+
+이렇게 구현한 사이드바를 실제 사이드바처럼 우측에서 열리게 하고, 사이드바가 열린 동안에는 뒤의 뷰가 터치되지 않는 그런 형태로 코드를 구현해야 했다.
+
+어떻게 하면 사이드바의 동작을 구현할 수 있을까 고민하다가, 처음에는 모달뷰처럼 구현하면 되지 않을까 생각했다. 모달뷰를 프레젠트할 때 `modalPresentationStyle`을 설정해야 하는데, 이것을 `.custom`으로 하고 어떤식으로 모달을 구현할 것인지 내가 직접 설정해주면 될 것 같다고 생각했다.
+```swift
+// 예시
+let sidebarVC = SidebarViewController()
+sidebarVC.modalPresentationStyle = .custom
+sidebarVC.transitioningDelegate = self
+present(sidebarVC, animated: true, completion: nil)
+```
+그래서 인터넷을 통해 모달뷰를 커스텀 하는 방법에 대해 조사해 보았는데, 이를 위해서는 `UIViewControllerTransitioningDelegate`를 구현하고, 내부에 메소드를 통해 커스텀을 할 수 있다는 것을 알았다. 그런데 완전히 커스텀을 하려면 `UIPresentationController`, `UIViewControllerAnimatedTransitioning`도 구현하여 각각의 클래스 내에서 세세하게 설정을 해야했다.
+
+어찌저찌 블로그 등을 봐가며 모든 설정을 완료하고 기능을 테스트 해보았는데...
+의도한 대로 사이드바가 우측에서 좌측으로 튀어나오는 애니메이션은 잘 작동했지만, 화면을 일부만 가려야 하는데 전부 가리는 풀 스크린 형태로 구현이 되었다. 값을 잘못 입력한 거라고 생각해서 이것저것 값을 수정해 가며 빌드 테스트를 해보았지만, 아무리 값을 변경하고 코드를 바꿔도 풀스크린 화면으로 표현되는 것은 바뀌지 않았다.
+
+몇 번을 시도해서 안되니 슬슬 포기하고 다른 방법을 시도해 보자는 생각이 들었다.
+
+그래서 다음으로 생각한 것이 어차피 '내 포켓몬' 사이드바도 뷰 컨트롤러니까, 뷰의 좌표값을 변경하는 걸로 표현할 수 있지 않을까? 생각했다. `addChild`로 뷰 컨트롤러에 서브 뷰 컨트롤러로 '내 포켓몬' 뷰 컨트롤러를 추가하고, 사이드바를 펼치는 액션일 실행되었을 때 '내 포켓몬' 뷰 컨트롤러의 뷰 좌표값 `x`를 이동시키면 마치 사이드메뉴가 열리는 것처럼 표현할 수 있을 것 같다고 생각했다.
+
+그래서 이를 곧바로 코드를 통해 표현해 보았다.
+```swift
+let sideView = MyPokemonViewController() // 뷰 컨트롤러 정의
+            
+self.addChild(sideView) // 메인 뷰 컨트롤러에 서브 뷰 컨트롤러 추가
+self.view.addSubview(sideView.view) // 메인 뷰에 서브 뷰 추가
+
+// 오토 레이아웃 설정
+sideView.view.snp.makeConstraints {
+	$0.top.bottom.equalToSuperview()
+	$0.leading.equalTo(self.view.snp.trailing)
+	$0.width.equalTo(sideView.view.bounds.width)
+}
+            
+self.view.layoutIfNeeded() // 메인 뷰 레이아웃 새로고침
+                
+sideView.view.frame.origin.x -= sideView.view.bounds.width - 100 // 서브 뷰 좌표값 변경
+                
+self.view.layoutIfNeeded() // 메인 뷰 레이아웃 새로고침
+sideView.didMove(toParent: self)
+```
+| 구현 결과 |
+| :-: |
+| ![1](https://github.com/user-attachments/assets/34710f35-d6a1-4140-9a7b-1afa02214428) |
+
+놀랍게도 예상한 대로 성공할 수 있었다. 다만 지금은 백그라운드 뷰도 없고, 사이드바를 닫는 액션도 존재하지 않아서 완벽하진 않았고, 사이드바가 나타나는 것도 부드럽지 못해서 수정의 필요가 있었다. 그럼에도 기능이 구현되었다는 것만으로 이미 50%는 달성한 것이라고 생각했다.
+
+이후에는 백그라운드 뷰를 추가하고, 백그라운드 뷰를 터치하면 사이드바가 닫히는 액션을 구현했다.
+그리고 사이드바가 나타날 때 애니메이션을 통해 부드럽게 나타나도록 수정해 주었다.
+
+#### 구현 결과
+![2](https://github.com/user-attachments/assets/5fbd3c4a-75f2-4b2f-b310-27393ae2346b)
+
+이렇게 사이드바의 구현을 마무리 하게 되었다. 사실 이 방법은 예전에 SwiftUI를 혼자서 가지고 놀 때 사용했던 방법인데, UIKit에서도 비슷하게 적용할 수 있을 것 같아서 사용해본 방법이다.
+실제로 사이드바가 어떻게 구현되는지는 모르겠지만... 아마 유사한 방법을 사용하지 않을까?
+
+혹은 내가 만든 방법을 좀 더 편리하게 사용할 수 있도록 구현했을 수도 있겠다. 추후에 실제 앱에서 사이드바를 어떻게 구현했는지 찾아보고 비교해보며 공부를 해보면 학습에 큰 도움이 될 것 같다고 생각했다.
+
+### 8) 🚨 코어데이터 CRUD 메소드 버그
+'내 포켓몬' 기능을 구현하며 코어 데이터를 사용했는데, 코어 데이터의 CRUD 메소드가 버그를 일으켰다.
+
+우선 코어데이터 엔티티는 `id`와 `name`이라는 2개의 attribute를 가지고 있고, 프로그램이 자동 관리하도록 구현했다. 그리고 코어 데이터를 관리하는 객체를 만들어 싱글톤 패턴으로 사용하기 위해 코드를 구현했는데, 이 때 프로토콜을 정의해서 코어데이터를 관리하는 객체가 기본적으로 가질 메소드 및 타입을 정의해 주었다.
+
+```swift
+// 코어 데이터 프로토콜
+protocol CoreDataManaged: AnyObject {
+    var persistentContainer: NSPersistentContainer { get }
+    var context: NSManagedObjectContext { get }
+    
+    func savedPokemon(id: Int, name: String)
+    func readAllData() -> [Pokemons]
+    func updatePokemon()
+    func deletePokemon(_ id: NSManagedObjectID)
+}
+
+// 코어데이터 기본 구현
+extension CoreDataManaged {
+    
+    var persistentContainer: NSPersistentContainer {
+        let container = NSPersistentContainer(name: "MyPokemon")
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Core Data Error: \(error.localizedDescription)")
+            }
+        }
+        return container
+    }
+
+    var context: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
+}
+```
+
+여기서 `extension`을 통해 `persistentContainer`와 `context`를 구현해 두었는데, 이는 코어 데이터를 관리하는 어떤 객체어서도 공통으로 사용하게 될 `NSManagedObjectContext`이기 때문에 미리 구현을 해두었다.
+
+그리고 클래스 객체를 만들어 코어 데이터를 관리하도록 만들었다
+```swift
+final class CoreDataManager: CoreDataManaged {
+    
+    static let coreDatashared = CoreDataManager() // 싱글톤 패턴
+    
+    private init() {}
+	
+    // 생략
+}
+```
+그리고 이 클래스 내부에서 코어데이터의 CRUD 메소드를 구현하여 사용했는데, 이상하게 메소드가 제대로 실행되지 않았다...
+
+제일 먼저 발견한 버그는 Create 메소드를 사용할 때 발생한 버그인데,
+```swift
+CoreData: error: Mutating a managed object... after it has been removed from its context.
+```
+이런 메세지가 콘솔창에 발생하며 데이터가 저장되지 않았다. context가 제거되었는데 수정을 하려고 해서 발생하는 오류라는 것 같은데... 나는 context를 제거한 적이 없었기 때문에 당황스러웠다.
+
+일단 내가 구현한 create 메소드는 아래의 코드와 같다
+```swift
+func savedPokemon(id: Int, name: String) {
+    guard let description = NSEntityDescription.entity(forEntityName: String(describing: Pokemons.self), in: self.context) else { return }
+    let entity: NSManagedObject = NSManagedObject.init(entity: description, insertInto: context)
+    entity.setValue(id, forKey: PokemonsKeys.id.rawValue)
+    entity.setValue(name, forKey: PokemonsKeys.name.rawValue)
+        
+    do {
+        try self.context.save()
+    } catch {
+        print(error)
+    }
+}
+```
+context는 프로토콜의 기본 구현으로 구현해 두었으니 별도로 구현하지 않고 `self.context`를 통해 바로 호출해서 사용했다. 혹시나 `description`이 초기화되지 못하고 return 하는건가 싶어서 브레이크 포인트를 걸고 확인해 봤지만, 어느 부분 하나 실행이 되지 않거나 잘못 실행되는 부분이 없었다.
+
+차라리 브레이크 포인트로 체크할 때 어딘가 문제가 있다면 수정할텐데, 코드는 모두 잘 실행되는데도 에러 문구가 발생하면서 데이터가 저장되지 않으니 어떻게 해결하면 좋을지도 막막했다.
+
+그러다가 에러 메시지가 결국 context와 관련된 내용이었기 때문에, 혹시 프로토콜 기본구현으로 context를 사용한 것이 문제였나 싶어서 클래스 내부에서 구현해 보거나 프로토콜 없이 사용해 보는 등 다양한 시도를 해보았지만 달라지는 건 없었다.
+
+그러다가 context를 새로 정의해서 사용해 보았는데 갑자기 에러가 발생하지 않고 데이터가 저장되었다.
+```swift
+func savedPokemon(id: Int, name: String) {
+    let context = self.context
+    guard let description = NSEntityDescription.entity(forEntityName: String(describing: Pokemons.self), in: context) else { return }
+    let entity: NSManagedObject = NSManagedObject.init(entity: description, insertInto: context)
+    entity.setValue(id, forKey: PokemonsKeys.id.rawValue)
+    entity.setValue(name, forKey: PokemonsKeys.name.rawValue)
+        
+    do {
+        try context.save()
+    } catch {
+        print(error)
+    }
+}
+```
+바뀐건 `let context = self.context`라는 코드를 추가하고 context를 사용하는 부분에 새로 정의한 context를 사용했을 뿐인데... 이렇게 한 것만으로 의도한 대로 데이터가 잘 저장되기 시작했다. 여전히 왜 이런 오류가 발생했고, 왜 이렇게 바꾸니까 해결 되었는지는 모르겠다...
+
+다음으로 발생한 버그는 delete 메소드를 실행했을 때 발생했다.
+delete 메소드는 `NSManagedObjectID`를 통해 엔티티 데이터 정보를 가져오고, 이를 삭제하는 형식으로 구현했다.
+```swift
+func deletePokemon(_ id: NSManagedObjectID) {
+    guard let pokemon = search(id) else { return }
+    self.context.delete(pokemon)
+        
+    do {
+        try self.context.save()
+    } catch {
+		print(error)
+    }
+}
+
+// 오브젝트ID를 통해 데이터를 찾고 반환하는 메소드
+func search(_ id: NSManagedObjectID) -> Pokemons? {
+    do {
+		let pokemon = try self.context.existingObject(with: id) as? Pokemons
+		return pokemon
+            
+    } catch {
+		print(error)
+		return nil
+    }
+}
+```
+delete를 실행할 때도 코드는 문제없이 실행되었고, 에러 메세지도 표시되지 않았지만 데이터가 삭제되지 않았다. 처음에는 create에서 발생했던 것과 마찬가지로 context 문제인가? 라고 생각해서 똑같이 context를 추가해서 실행해 보았다.
+```swift
+func deletePokemon(_ id: NSManagedObjectID) {
+	let context = self.context
+    guard let pokemon = search(id) else { return }
+    context.delete(pokemon)
+        
+    do {
+        try context.save()
+    } catch {
+		print(error)
+    }
+}
+```
+그러나 여전히 데이터는 삭제되지 않았다. 그래서 AI에게 이 메소드가 잘못된 부분이 있는지 확인해 달라고 했더니, search 메소드의 context와 deletePokemon의 context가 서로 다른 context여서 문제가 발생할 수도 있다고 하였다.
+
+이를 검증하기 위해 프린트문을 추가하고 빌드 테스트를 진행해 보았는데...
+```swift
+if pokemon.managedObjectContext !== context {
+	print("pokemon's context does not match self.context")
+}
+```
+실제로 콘솔창에 내가 입력한 프린트문이 출력되는 것을 확인할 수 있었다. 즉, search에서 데이터를 검색한 context와 deletePokemon에서 사용하는 context가 서로 달라서 데이터가 제대로 삭제되지 않는다는 뜻이었다. `self.context`를 사용해서 같은 context를 사용하게끔 했는데도 왜 이런 버그가 발생했는지 모르겠다...
+
+일단은 문제를 해결하기 위해 search 메소드의 파라미터에 context를 주입해서 사용하기로 하였다.
+```swift
+func deletePokemon(_ id: NSManagedObjectID) {
+	let context = self.context
+    guard let pokemon = search(id, context) else { return }
+    context.delete(pokemon)
+        
+    do {
+        try context.save()
+    } catch {
+		print(error)
+    }
+}
+
+// 오브젝트ID를 통해 데이터를 찾고 반환하는 메소드
+func search(_ id: NSManagedObjectID, _ context: NSManagedObjectContext) -> Pokemons? {
+    do {
+		let pokemon = try context.existingObject(with: id) as? Pokemons
+		return pokemon
+            
+    } catch {
+		print(error)
+		return nil
+    }
+}
+```
+이렇게 수정해주니 의도한 대로 데이터가 잘 삭제되기 시작했다.
+어떻게 우연히 해결은 성공했지만, 여전히 왜 이런 버그가 발생했는지는 모르겠다. 비슷한 사례도 찾아보기 힘들고, 원인을 모르니 왜 이렇게 하면 해결이 되는지도 모르기 때문이다.
+
+아무래도 코어데이터에 대한 이해가 부족한 것 같아서 추가적인 학습이 필요할 것 같다고 느꼈다.

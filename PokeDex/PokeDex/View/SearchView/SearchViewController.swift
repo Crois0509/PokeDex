@@ -19,6 +19,11 @@ final class SearchViewController: UIViewController {
         
         setupUI()
     }
+    
+    // 뷰 컨트롤러 터치시 편집을 종료(키보드 내리기)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
 }
 
 // MARK: - SearchViewController UI Setting Method

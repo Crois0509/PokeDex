@@ -35,6 +35,7 @@ private extension PokeDexView {
     func setupUI() {
         setupLogo()
         setupLayout()
+        setupLogoGesture()
     }
     
     /// 모든 레이아웃을 세팅하는 메소드
@@ -59,5 +60,21 @@ private extension PokeDexView {
         self.logo.image = UIImage(named: "pokedexLogo")
         self.logo.backgroundColor = .clear
         self.logo.contentMode = .scaleAspectFit
+        self.logo.isUserInteractionEnabled = true
+    }
+    
+    /// 로고에 액션을 추가하는 메소드
+    func setupLogoGesture() {
+        let tapped = UITapGestureRecognizer(target: self, action: #selector(resetScroll))
+        self.logo.addGestureRecognizer(tapped)
+    }
+    
+    /// 스크롤을 리셋하는 메소드
+    @objc func resetScroll() {
+        if let view = self.view as? PokemonCollectionView {
+            view.resetScroll()
+        } else if let view = self.view as? SearchView {
+            view.resetScroll()
+        }
     }
 }
