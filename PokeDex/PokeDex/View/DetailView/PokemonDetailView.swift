@@ -18,7 +18,7 @@ final class PokemonDetailView: UIView {
     
     private let viewModel: DetailViewModel // 초기화시 주입
     
-    private var pokemon: (id: Int, name: String)?
+    private var pokemon: (id: Int, name: String)? // 디테일뷰가 가지는 포켓몬 데이터
         
     private let imageView = UIImageView()
     private let nameLabel = UILabel()
@@ -38,6 +38,8 @@ final class PokemonDetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// 포켓몬을 포획 성공했는지 확인하는 메소드
+    /// - Returns: 포켓몬 포획 성공 여부
     func successCapturedPokemon() -> Bool {
         guard let id = self.pokemon?.id else { return false }
         return self.viewModel.capture(id: id)

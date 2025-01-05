@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 
+// 코어 데이터 프로토콜
 protocol CoreDataManaged: AnyObject {
     var persistentContainer: NSPersistentContainer { get }
     var context: NSManagedObjectContext { get }
@@ -16,10 +17,11 @@ protocol CoreDataManaged: AnyObject {
     func readAllData() -> [Pokemons]
     func updatePokemon()
     func deletePokemon(_ id: NSManagedObjectID)
-    func saveContext() throws
 }
 
+// 코어데이터 기본 구현
 extension CoreDataManaged {
+    
     var persistentContainer: NSPersistentContainer {
         let container = NSPersistentContainer(name: "MyPokemon")
         container.loadPersistentStores { _, error in
@@ -32,15 +34,5 @@ extension CoreDataManaged {
 
     var context: NSManagedObjectContext {
         return persistentContainer.viewContext
-    }
-    
-    func saveContext() throws {
-        if self.context.hasChanges {
-            do {
-                try self.context.save()
-            } catch {
-                print(error)
-            }
-        }
     }
 }

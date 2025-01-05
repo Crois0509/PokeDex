@@ -11,6 +11,7 @@ import RxCocoa
 import RxSwift
 import CoreData
 
+// 내 포켓몬 뷰
 final class MyPokemonView: UIView {
     
     private let disposeBag = DisposeBag()
@@ -21,8 +22,9 @@ final class MyPokemonView: UIView {
     
     private let infoLabel = UILabel()
     
-    private var myPokemons: [(id: Int, name: String, obId: NSManagedObjectID)] = []
+    private var myPokemons: [(id: Int, name: String, obId: NSManagedObjectID)] = [] // 내 포켓몬 배열
     
+    // MARK: - MyPokemonView Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -35,15 +37,17 @@ final class MyPokemonView: UIView {
         setupUI()
     }
     
+    /// 내 포켓몬 목록을 다시 불러오는 메소드
     func reloadMyPokemons() {
         readMyPokemons()
-        
     }
     
 }
 
+// MARK: - MyPokemonView UI Setting Method
 private extension MyPokemonView {
     
+    /// 모든 UI를 세팅하는 메소드
     func setupUI() {
         configure()
         setupTitleLabel()
@@ -54,6 +58,7 @@ private extension MyPokemonView {
         selectCell()
     }
     
+    /// self에 대해 설정하는 메소드
     func configure() {
         self.backgroundColor = .clear
         [self.titleLabel,
@@ -63,6 +68,7 @@ private extension MyPokemonView {
         }
     }
     
+    /// 타이틀 레이블을 세팅하는 메소드
     func setupTitleLabel() {
         self.titleLabel.text = "내 포켓몬"
         self.titleLabel.font = UIFont.boldSystemFont(ofSize: 50)
@@ -72,6 +78,7 @@ private extension MyPokemonView {
         self.titleLabel.backgroundColor = .clear
     }
     
+    /// 테이블 뷰를 세팅하는 메소드
     func setupTableView() {
         self.myPokemonTable.dataSource = self
         self.myPokemonTable.backgroundColor = .clear
@@ -83,6 +90,7 @@ private extension MyPokemonView {
         self.myPokemonTable.register(MyPokemonCell.self, forCellReuseIdentifier: MyPokemonCell.id)
     }
     
+    /// 정보 레이블을 세팅하는 메소드
     func setupInfoLabel() {
         self.infoLabel.text = "최대 6마리까지 등록 가능합니다"
         self.infoLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
@@ -92,6 +100,7 @@ private extension MyPokemonView {
         self.infoLabel.backgroundColor = .clear
     }
     
+    /// 모든 레이아웃을 세팅하는 메소드
     func setupLayout() {
         self.titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
@@ -111,6 +120,7 @@ private extension MyPokemonView {
         }
     }
     
+    /// 내 포켓몬 정보를 불러오는 메소드
     func readMyPokemons() {
         let pokemons = CoreDataManager.coreDatashared.readAllData()
         var myPokemons: [(id: Int, name: String, obId: NSManagedObjectID)] = []
@@ -125,6 +135,7 @@ private extension MyPokemonView {
         self.myPokemonTable.reloadData()
     }
     
+    /// 셀을 선택했을 때 액션을 설정하는 메소드
     func selectCell() {
         self.myPokemonTable.rx.itemSelected
             .withUnretained(self)
@@ -158,12 +169,15 @@ private extension MyPokemonView {
     
 }
 
+// MARK: - MyPokemonView UITableViewDataSource Method
 extension MyPokemonView: UITableViewDataSource {
     
+    // 테이블 뷰 셀 수 = 최대 6마리 제한임으로 항상 6으로 고정
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 6
     }
     
+    // 셀을 설정하는 메소드
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyPokemonCell.id, for: indexPath) as? MyPokemonCell else {
             return UITableViewCell()

@@ -9,9 +9,10 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+// 내 포켓몬 뷰 커스텀 셀
 final class MyPokemonCell: UITableViewCell {
     
-    static let id: String = "MyPokemonCell"
+    static let id: String = "MyPokemonCell" // 고유 ID
     
     private let pokemon = UIImageView()
     
@@ -21,6 +22,7 @@ final class MyPokemonCell: UITableViewCell {
     
     private let blankLabel = UILabel()
     
+    // MARK: - MyPokemonCell Initializer
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -33,12 +35,17 @@ final class MyPokemonCell: UITableViewCell {
         setupUI()
     }
     
+    // 셀 재사용 옵션
     override func prepareForReuse() {
         super.prepareForReuse()
         
         setupUI()
     }
     
+    /// 셀의 이미지, 레이블 등을 세팅하는 메소드
+    /// - Parameters:
+    ///   - id: 포켓몬 id
+    ///   - name: 포켓몬 이름
     func configCell(id: Int?, name: String?) {
         if let id = id {
             guard let url = URL(string: APIEndpoint.pokemonImageURL(id: id).urlString) else { return }
@@ -56,8 +63,10 @@ final class MyPokemonCell: UITableViewCell {
     }
 }
 
+// MARK: - MyPokemonCell UI Setting Method
 private extension MyPokemonCell {
     
+    /// 모든 UI를 세팅하는 메소드
     func setupUI() {
         configure()
         setupImageView()
@@ -65,6 +74,7 @@ private extension MyPokemonCell {
         setupLayout()
     }
     
+    /// self에 대해 설정하는 메소드
     func configure() {
         self.backgroundColor = .personalDark
         self.layer.cornerRadius = 10
@@ -78,12 +88,14 @@ private extension MyPokemonCell {
         }
     }
     
+    /// 이미지뷰를 세팅하는 메소드
     func setupImageView() {
         self.pokemon.contentMode = .scaleToFill
         self.pokemon.backgroundColor = .white
         self.pokemon.layer.cornerRadius = 25
     }
     
+    /// 레이블에 대해 세팅하는 메소드
     func setupLabel() {
         [self.numberLabel,
          self.nameLabel,
@@ -98,6 +110,7 @@ private extension MyPokemonCell {
         self.blankLabel.text = "빈 슬롯입니다."
     }
     
+    /// 모든 레이아웃을 세팅하는 메소드
     func setupLayout() {
         self.pokemon.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)

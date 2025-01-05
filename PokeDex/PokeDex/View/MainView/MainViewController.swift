@@ -33,7 +33,7 @@ class MainViewController: UIViewController {
 // MARK: - MainViewController UI Setting Method
 private extension MainViewController {
     
-    /// VC와 뷰를 세팅하는 메소드
+    /// 모든 UI를 세팅하는 메소드
     func setupUI() {
         configure()
         setupSideButton()
@@ -41,14 +41,16 @@ private extension MainViewController {
         addTappedAction()
     }
     
+    /// self에 대해 설정하는 메소드
     func configure() {
         self.view.backgroundColor = .personal
         [self.pokemonView,
          self.sideMenuButton].forEach { self.view.addSubview($0) }
     }
     
+    /// 사이드 버튼을 세팅하는 메소드
     func setupSideButton() {
-        self.sideMenuButton.text = "My"
+        self.sideMenuButton.text = "MY"
         self.sideMenuButton.font = .boldSystemFont(ofSize: 20)
         self.sideMenuButton.textColor = .white
         self.sideMenuButton.numberOfLines = 1
@@ -57,15 +59,18 @@ private extension MainViewController {
         self.sideMenuButton.isUserInteractionEnabled = true
     }
     
+    /// 사이드 버튼에 액션을 추가하는 메소드
     func addTappedAction() {
         let tapped = UITapGestureRecognizer(target: self, action: #selector(presentSideMenu))
         self.sideMenuButton.addGestureRecognizer(tapped)
     }
     
+    /// 사이드 버튼 액션
     @objc func presentSideMenu() {
         self.isPresentSideMenu?()
     }
-        
+    
+    /// 모든 레이아웃을 세팅하는 메소드
     func setupLayout() {
         self.pokemonView.snp.makeConstraints {
             $0.edges.equalTo(self.view.safeAreaLayoutGuide)

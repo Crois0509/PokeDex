@@ -43,6 +43,9 @@ final class DetailViewModel {
             }).disposed(by: self.disposeBag)
     }
     
+    /// 포켓몬을 확률에 따라 포획 성공 실패를 결정하는 메소드
+    /// - Parameter id: 포켓몬 id
+    /// - Returns: 포획 성공 여부
     func capture(id: Int) -> Bool {
         let probability = Int.random(in: 0...100)
         
@@ -96,6 +99,8 @@ final class DetailViewModel {
         return false
     }
     
+    /// 포획이 성공한 포켓몬을 코어 데이터에 저장하는 메소드
+    /// - Returns: 코어 데이터에 저장 성공 여부
     private func successCapture() -> Bool {
         // 코어 데이터에 저장
         guard let data = try? self.pokemonDetailData.value().first else { return false }
