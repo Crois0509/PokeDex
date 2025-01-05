@@ -118,7 +118,7 @@ private extension DetailViewController {
     /// 포켓몬을 포획하는 액션
     @objc func tryPokemonCapture() {
         if CoreDataManager.coreDatashared.readAllData().count >= 6 {
-            AlertManager.alert.showAlert(on: self, title: "포획 실패", message: "내 포켓몬이 슬롯이 가득 차서\n더이상 포켓몬을 포획할 수 없습니다.\n내 포켓몬 슬롯을 비운 후\n다시 시도해 주세요.")
+            AlertManager.alert.showAlert(on: self, title: "포획 실패", message: "내 포켓몬 슬롯이 가득 차서\n더이상 포켓몬을 포획할 수 없습니다.\n내 포켓몬 슬롯을 비운 후\n다시 시도해 주세요.")
             
         } else {
             switch self.detailView.successCapturedPokemon() {
