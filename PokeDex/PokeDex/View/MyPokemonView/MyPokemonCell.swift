@@ -54,6 +54,8 @@ final class MyPokemonCell: UITableViewCell {
             self.nameLabel.isHidden = false
             self.numberLabel.text = "No.\(id)"
             self.numberLabel.isHidden = false
+            self.isUserInteractionEnabled = true
+
         } else {
             self.blankLabel.isHidden = false
             self.isUserInteractionEnabled = false
