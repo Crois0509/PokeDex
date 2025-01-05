@@ -212,7 +212,7 @@ private extension SearchView {
             )
             
             guard let view = self.window?.rootViewController as? UINavigationController else { return }
-            view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+            view.pushViewController(DetailViewController(detailView: detailView), animated: true)
         }
     }
     

@@ -160,7 +160,7 @@ private extension PokemonCollectionView {
                 )
                 
                 guard let view = owner.window?.rootViewController as? UINavigationController else { return }
-                view.pushViewController(DetaileViewController(detailView: detailView), animated: true)
+                view.pushViewController(DetailViewController(detailView: detailView), animated: true)
                 
             }, onError: { error in
                 

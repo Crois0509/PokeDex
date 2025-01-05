@@ -15,6 +15,7 @@ final class SearchTableViewCell: UITableViewCell {
     
     private let numberLabel = UILabel()
     private let nameLabel = UILabel()
+    private let oshiMark = UIImageView()
     
     // MARK: - SearchTableViewCell Initializer
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -36,6 +37,7 @@ final class SearchTableViewCell: UITableViewCell {
     func configLabel(id: Int, name: String) {
         self.numberLabel.text = "No.\(id)"
         self.nameLabel.text = name
+        self.oshiMark.isHidden = oshiCheck(id: id)
     }
 }
 
@@ -46,6 +48,7 @@ private extension SearchTableViewCell {
     func setupUI() {
         configure()
         setupLabel()
+        setupImageView()
         setupLayout()
     }
     
@@ -55,7 +58,7 @@ private extension SearchTableViewCell {
         self.layer.cornerRadius = 15
         self.layer.borderColor = UIColor.personal.cgColor
         self.layer.borderWidth = 2.5
-        [self.numberLabel, self.nameLabel].forEach {
+        [self.numberLabel, self.nameLabel, self.oshiMark].forEach {
             self.addSubview($0)
         }
     }
@@ -72,6 +75,15 @@ private extension SearchTableViewCell {
         self.nameLabel.textAlignment = .right
     }
     
+    /// 이미지뷰를 세팅하는 메소드
+    func setupImageView() {
+        self.oshiMark.image = UIImage(systemName: "star.fill")
+        self.oshiMark.contentMode = .scaleAspectFit
+        self.oshiMark.tintColor = .white
+        self.oshiMark.backgroundColor = .clear
+        self.oshiMark.isHidden = true
+    }
+    
     /// 모든 레이아웃을 세팅하는 메소드
     func setupLayout() {
         self.numberLabel.snp.makeConstraints {
@@ -81,7 +93,21 @@ private extension SearchTableViewCell {
         
         self.nameLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(20)
+            $0.leading.equalTo(self.numberLabel.snp.trailing).offset(20)
         }
+        
+        self.oshiMark.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(20)
+            $0.width.height.equalTo(20)
+        }
+    }
+    
+    /// 포켓몬이 내 포켓몬으로 등록되었는지 확인하는 메소드
+    /// - Parameter id: 포켓몬 id
+    /// - Returns: 등록되었는지 여부
+    func oshiCheck(id: Int) -> Bool {
+        let oshis = CoreDataManager.coreDatashared.readAllData()
+        return oshis.filter { Int($0.id) == id }.isEmpty
     }
 }

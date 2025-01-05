@@ -12,7 +12,11 @@ import SnapKit
 class MainViewController: UIViewController {
     
     private lazy var pokemonView = PokeDexView(view: PokemonCollectionView()) // 메인화면 뷰
-
+    
+    private let sideMenuButton = UILabel()
+    
+    var isPresentSideMenu: (() -> Void)?
+    
     // MARK: - MainViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,16 +29,56 @@ class MainViewController: UIViewController {
         
         self.navigationController?.navigationBar.isHidden = true
     }
+}
+// MARK: - MainViewController UI Setting Method
+private extension MainViewController {
     
-    // MARK: - MainViewController UI Setting Method
+    /// 모든 UI를 세팅하는 메소드
+    func setupUI() {
+        configure()
+        setupSideButton()
+        setupLayout()
+        addTappedAction()
+    }
     
-    /// VC와 뷰를 세팅하는 메소드
-    private func setupUI() {
+    /// self에 대해 설정하는 메소드
+    func configure() {
         self.view.backgroundColor = .personal
-        self.view.addSubview(self.pokemonView)
-        
+        [self.pokemonView,
+         self.sideMenuButton].forEach { self.view.addSubview($0) }
+    }
+    
+    /// 사이드 버튼을 세팅하는 메소드
+    func setupSideButton() {
+        self.sideMenuButton.text = "MY"
+        self.sideMenuButton.font = .boldSystemFont(ofSize: 20)
+        self.sideMenuButton.textColor = .white
+        self.sideMenuButton.numberOfLines = 1
+        self.sideMenuButton.textAlignment = .center
+        self.sideMenuButton.backgroundColor = .clear
+        self.sideMenuButton.isUserInteractionEnabled = true
+    }
+    
+    /// 사이드 버튼에 액션을 추가하는 메소드
+    func addTappedAction() {
+        let tapped = UITapGestureRecognizer(target: self, action: #selector(presentSideMenu))
+        self.sideMenuButton.addGestureRecognizer(tapped)
+    }
+    
+    /// 사이드 버튼 액션
+    @objc func presentSideMenu() {
+        self.isPresentSideMenu?()
+    }
+    
+    /// 모든 레이아웃을 세팅하는 메소드
+    func setupLayout() {
         self.pokemonView.snp.makeConstraints {
             $0.edges.equalTo(self.view.safeAreaLayoutGuide)
+        }
+        
+        self.sideMenuButton.snp.makeConstraints {
+            $0.top.equalTo(self.view.safeAreaLayoutGuide).offset(30)
+            $0.trailing.equalToSuperview().inset(30)
         }
     }
 }

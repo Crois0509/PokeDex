@@ -42,4 +42,73 @@ final class DetailViewModel {
                 
             }).disposed(by: self.disposeBag)
     }
+    
+    /// 포켓몬을 확률에 따라 포획 성공 실패를 결정하는 메소드
+    /// - Parameter id: 포켓몬 id
+    /// - Returns: 포획 성공 여부
+    func capture(id: Int) -> Bool {
+        let probability = Int.random(in: 0...100)
+        
+        switch id {
+        case (1...99):
+            guard (0...90).contains(probability) else { return false }
+            return successCapture()
+            
+        case (100...199):
+            guard (0...85).contains(probability) else { return false }
+            return successCapture()
+            
+        case (200...299):
+            guard (0...78).contains(probability) else { return false }
+            return successCapture()
+            
+        case (300...399):
+            guard (0...70).contains(probability) else { return false }
+            return successCapture()
+            
+        case (400...499):
+            guard (0...62).contains(probability) else { return false }
+            return successCapture()
+            
+        case (500...599):
+            guard (0...55).contains(probability) else { return false }
+            return successCapture()
+            
+        case (600...699):
+            guard (0...47).contains(probability) else { return false }
+            return successCapture()
+            
+        case (700...799):
+            guard (0...36).contains(probability) else { return false }
+            return successCapture()
+            
+        case (800...899):
+            guard (0...29).contains(probability) else { return false }
+            return successCapture()
+            
+        case (900...999):
+            guard (0...20).contains(probability) else { return false }
+            return successCapture()
+            
+        case (1000...):
+            guard (0...10).contains(probability) else { return false }
+            return successCapture()
+            
+        default: break
+        }
+        return false
+    }
+    
+    /// 포획이 성공한 포켓몬을 코어 데이터에 저장하는 메소드
+    /// - Returns: 코어 데이터에 저장 성공 여부
+    private func successCapture() -> Bool {
+        // 코어 데이터에 저장
+        guard let data = try? self.pokemonDetailData.value().first else { return false }
+        let id = data.id
+        let name = data.name
+        
+        CoreDataManager.coreDatashared.savedPokemon(id: id, name: name)
+        
+        return true
+    }
 }
