@@ -88,12 +88,13 @@ private extension SearchTableViewCell {
     func setupLayout() {
         self.numberLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
+            $0.width.equalTo(60)
             $0.leading.equalToSuperview().inset(20)
         }
         
         self.nameLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalTo(self.numberLabel.snp.trailing).offset(20)
+            $0.leading.equalTo(self.numberLabel.snp.trailing).offset(10)
         }
         
         self.oshiMark.snp.makeConstraints {
