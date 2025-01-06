@@ -18,6 +18,7 @@ enum PokemonsKeys: String {
 final class CoreDataManager: CoreDataManaged {
     
     static let coreDatashared = CoreDataManager() // 싱글톤 패턴
+    private lazy var context = self.persistentContainer.viewContext
     
     private init() {}
     
@@ -26,14 +27,13 @@ final class CoreDataManager: CoreDataManaged {
     ///   - id: 포켓몬 id
     ///   - name: 포켓몬 이름
     func savedPokemon(id: Int, name: String) {
-        let context = self.context
-        guard let description = NSEntityDescription.entity(forEntityName: String(describing: Pokemons.self), in: context) else { return }
-        let entity: NSManagedObject = NSManagedObject.init(entity: description, insertInto: context)
+        guard let description = NSEntityDescription.entity(forEntityName: String(describing: Pokemons.self), in: self.context) else { return }
+        let entity: NSManagedObject = NSManagedObject.init(entity: description, insertInto: self.context)
         entity.setValue(id, forKey: PokemonsKeys.id.rawValue)
         entity.setValue(name, forKey: PokemonsKeys.name.rawValue)
         
         do {
-            try context.save()
+            try self.context.save()
         } catch {
             print(error)
         }
@@ -53,15 +53,12 @@ final class CoreDataManager: CoreDataManaged {
     /// 특정 포켓몬을 제거하는 메소드
     /// - Parameter id: 해당 포켓몬의 NSManagedObjectID
     func deletePokemon(_ id: NSManagedObjectID) {
-        let context = self.context
-        guard let pokemon = search(id, context) else { return }
-        if pokemon.managedObjectContext !== context {
-            print("pokemon's context does not match self.context")
-        }
-        context.delete(pokemon)
+//        let context = self.context
+        guard let pokemon = search(id) else { return }
+        self.context.delete(pokemon)
         
         do {
-            try context.save()
+            try self.context.save()
         } catch {
             print(error)
         }
@@ -72,9 +69,9 @@ final class CoreDataManager: CoreDataManaged {
     ///   - id: 포켓몬 ID
     ///   - context: 어떤 컨테이너에서 검색할 것인지
     /// - Returns: NSManagedObject -> 특정 포켓몬 정보
-    func search(_ id: NSManagedObjectID, _ context: NSManagedObjectContext) -> Pokemons? {
+    func search(_ id: NSManagedObjectID) -> Pokemons? {
         do {
-            let pokemon = try context.existingObject(with: id) as? Pokemons
+            let pokemon = try self.context.existingObject(with: id) as? Pokemons
             return pokemon
             
         } catch {

@@ -11,7 +11,6 @@ import CoreData
 // 코어 데이터 프로토콜
 protocol CoreDataManaged: AnyObject {
     var persistentContainer: NSPersistentContainer { get }
-    var context: NSManagedObjectContext { get }
     
     func savedPokemon(id: Int, name: String)
     func readAllData() -> [Pokemons]
@@ -31,8 +30,5 @@ extension CoreDataManaged {
         }
         return container
     }
-
-    var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
+    
 }

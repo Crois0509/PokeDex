@@ -21,14 +21,9 @@
 | Icon | Lunch | Main |
 | :-: | :-: | :-: |
 | ![Group 4](https://github.com/user-attachments/assets/5278cc77-7663-4ec6-9374-1f32883dc260) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 45 38](https://github.com/user-attachments/assets/ff6be187-d771-404c-8372-e47f26e4677d) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 08 39](https://github.com/user-attachments/assets/50510f00-aba2-439b-8836-48b66b0d3f49) |
-
-
 | Detail | Search | Search 2 |
-| :-: | :-: | :-: |
 | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 09 26](https://github.com/user-attachments/assets/773b769b-bd06-4387-9675-2d659d73670b) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-03 at 16 46 42](https://github.com/user-attachments/assets/60ddd6a0-6729-4ef2-aca8-abe5531c11cd) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 08 25](https://github.com/user-attachments/assets/aa1f8dc2-c90e-4c13-b65b-a1bb77cc5cb3) |
-
 | SideMenu | MyPokemon | Throw |
-| :-: | :-: | :-: |
 | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 07 55](https://github.com/user-attachments/assets/e1a68e63-d0e3-4fde-834b-0f48a5db7a5b) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 11 16](https://github.com/user-attachments/assets/4fbf731a-650f-4b66-b703-ed53bd9a9892) | ![Simulator Screenshot - iPhone 16 Pro - 2025-01-05 at 14 08 05](https://github.com/user-attachments/assets/1194d66e-3c58-4570-9e8f-54b919986cad) |
 
 ***

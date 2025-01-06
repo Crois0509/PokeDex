@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RxSwift
+import RxCocoa
 
 // 탭 바 컨트롤러
 final class MainTabBarController: UIViewController {
@@ -19,6 +20,7 @@ final class MainTabBarController: UIViewController {
     private var currentVC: UIViewController? // 현재 뷰 컨트롤러
     
     private let blockingView = UIView()
+    private let tapped = UITapGestureRecognizer()
     
     // MARK: - MainTabBarController Initializer
     
@@ -51,7 +53,6 @@ private extension MainTabBarController {
         setupLayout()
         displayViewController(0)
         bind()
-        presentSideMenu()
     }
     
     /// self에 대해 설정하는 메소드
@@ -65,9 +66,7 @@ private extension MainTabBarController {
     func setupBlockingView() {
         self.blockingView.backgroundColor = .black.withAlphaComponent(0.3)
         self.blockingView.isHidden = true
-        
-        let tapped = UITapGestureRecognizer(target: self, action: #selector(dismissSideMenu))
-        self.blockingView.addGestureRecognizer(tapped)
+        self.blockingView.addGestureRecognizer(self.tapped)
     }
     
     /// 모든 레이아웃을 설정하는 메소드
@@ -106,6 +105,13 @@ private extension MainTabBarController {
     
     /// 데이터 바인딩 메소드
     func bind() {
+        changePageIndex()
+        presentSideMenu()
+        dismissSideMenu()
+    }
+    
+    /// 현재 탭을 바꾸는 메소드
+    func changePageIndex() {
         self.mainTabBar.viewModel.pageIndex
             .withUnretained(self)
             .subscribe(on: MainScheduler.instance)
@@ -121,45 +127,56 @@ private extension MainTabBarController {
     /// 사이드 메뉴를 표시하는 메소드
     func presentSideMenu() {
         guard let vc = self.viewControllers.first as? MainViewController else { return }
-        vc.isPresentSideMenu = { [weak self] in
-            guard let self else { return }
-            let sideView = MyPokemonViewController()
-            
-            self.addChild(sideView)
-            self.view.addSubview(sideView.view)
-            sideView.view.snp.makeConstraints {
-                $0.top.bottom.equalToSuperview()
-                $0.leading.equalTo(self.view.snp.trailing)
-                $0.width.equalTo(sideView.view.bounds.width)
-            }
-            
-            self.view.layoutIfNeeded()
-            
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
-                self.blockingView.isHidden = false
+        vc.tapGesture.rx.event
+            .subscribe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, event in
                 
-                sideView.view.frame.origin.x -= sideView.view.bounds.width - 100
+                let sideView = MyPokemonViewController()
                 
-                self.view.layoutIfNeeded()
-            }, completion: { _ in
-                sideView.didMove(toParent: self)
-            })
-        }
+                owner.addChild(sideView)
+                owner.view.addSubview(sideView.view)
+                sideView.view.snp.makeConstraints {
+                    $0.top.bottom.equalToSuperview()
+                    $0.leading.equalTo(owner.view.snp.trailing)
+                    $0.width.equalTo(sideView.view.bounds.width)
+                }
+                
+                owner.view.layoutIfNeeded()
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                    owner.blockingView.isHidden = false
+                    
+                    sideView.view.frame.origin.x -= sideView.view.bounds.width - 100
+                    
+                    owner.view.layoutIfNeeded()
+                }, completion: { _ in
+                    sideView.didMove(toParent: owner)
+                })
+                
+            }).disposed(by: self.disposeBag)
     }
     
     
     /// 사이드 메뉴를 닫는 메소드
-    @objc func dismissSideMenu() {
-        guard let sideView = self.children.last as? MyPokemonViewController else { return }
-        
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
-            sideView.view.frame.origin.x += sideView.view.bounds.width
-            self.blockingView.isHidden = true
-            self.view.layoutIfNeeded()
-            
-        }, completion: { _ in
-            sideView.view.removeFromSuperview()
-            sideView.removeFromParent()
-        })
+    func dismissSideMenu() {
+        self.tapped.rx.event
+            .subscribe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, event in
+                
+                guard let sideView = owner.children.last as? MyPokemonViewController else { return }
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                    sideView.view.frame.origin.x += sideView.view.bounds.width
+                    owner.blockingView.isHidden = true
+                    owner.view.layoutIfNeeded()
+                    
+                }, completion: { _ in
+                    sideView.view.removeFromSuperview()
+                    sideView.removeFromParent()
+                })
+                
+            }).disposed(by: self.disposeBag)
     }
 }
