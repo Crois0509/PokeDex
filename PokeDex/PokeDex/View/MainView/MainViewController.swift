@@ -15,8 +15,8 @@ class MainViewController: UIViewController {
     
     private let sideMenuButton = UILabel()
     
-    var isPresentSideMenu: (() -> Void)?
-    
+    lazy var tapGesture = UITapGestureRecognizer()
+        
     // MARK: - MainViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,13 +61,7 @@ private extension MainViewController {
     
     /// 사이드 버튼에 액션을 추가하는 메소드
     func addTappedAction() {
-        let tapped = UITapGestureRecognizer(target: self, action: #selector(presentSideMenu))
-        self.sideMenuButton.addGestureRecognizer(tapped)
-    }
-    
-    /// 사이드 버튼 액션
-    @objc func presentSideMenu() {
-        self.isPresentSideMenu?()
+        self.sideMenuButton.addGestureRecognizer(self.tapGesture)
     }
     
     /// 모든 레이아웃을 세팅하는 메소드
