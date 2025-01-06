@@ -6,6 +6,8 @@
 
 **⏰프로젝트 일정**: 2024.12.23(월) ~ 2024.01.06(월) 12:00
 
+**🔗Figma**: [Figma](https://www.figma.com/design/WnmRJYJ4AsYGtFE94TrP1e/Untitled?node-id=0-1&t=VUQsejz4OBsqOpoJ-1)
+
 **🔗Reperance**: [PokeAPI](https://pokeapi.co/#google_vignette)
 
 ***
