@@ -142,7 +142,6 @@
 		AA75C7092D1D1BAD009B2A9D /* View */ = {
 			isa = PBXGroup;
 			children = (
-				AA9AAA3A2D290F1700EA7F09 /* AlertManager */,
 				AA9AA9A22D28DCDA00EA7F09 /* MyPokemonView */,
 				AA9AA85D2D237F6700EA7F09 /* SearchView */,
 				AA9AA6A92D22B93D00EA7F09 /* TabBar */,
@@ -156,8 +155,8 @@
 		AA75C70A2D1D1BB4009B2A9D /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				AA75C71F2D1D6D95009B2A9D /* MainViewModel.swift */,
 				AA75C7272D1E7244009B2A9D /* PokemonServiceProtocol.swift */,
+				AA75C71F2D1D6D95009B2A9D /* MainViewModel.swift */,
 				AA75C72B2D1F9654009B2A9D /* DetailViewModel.swift */,
 				AA9AA85B2D23759900EA7F09 /* TabBarViewModel.swift */,
 				AA9AA9062D23D89B00EA7F09 /* SearchViewModel.swift */,
@@ -173,6 +172,7 @@
 				AA9AA6A52D211F0E00EA7F09 /* DataModel */,
 				AA9AA6A62D2120CC00EA7F09 /* Translator */,
 				AA75C7292D1E9E39009B2A9D /* APIEndpoint.swift */,
+				AA9AAA3A2D290F1700EA7F09 /* AlertManager */,
 			);
 			path = Model;
 			sourceTree = "<group>";
